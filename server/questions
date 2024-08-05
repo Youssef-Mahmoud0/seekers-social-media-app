@@ -1,0 +1,77 @@
+1 - is it supposed to be /posts/:postId/likes or /posts/:postId/like (don't forget to populate it) ✔️
+
+2 - what to export as an object and what to export as a class or it doesn't matter? ✔️ don't matter
+
+
+3 - what to return to the client side when making other requests other that get?
+    post: added successfuly?
+    put/patch: updated version of the resource?
+    delete: deleted successfully? and delete it frm client side after recieving a response.ok?
+    do i access the dataBase twice?
+
+------------> can send what really suits me 
+
+
+4 - do i need userId at all?
+
+5 - do i send all the data related to a post to the client side and he manages?
+    so if i send 5 posts, do i send the Likes, comments etc with all info or just when requested 
+    does each entry in post and comments tables must contain a likeCount for efficeincy?
+
+6 - 
+
+7 - whenver i insert something in database, do i make a second query to get all the related objects after update?
+
+8 - in likes, i'm accessing the database 3 times ????
+
+9 - difference between localStorage and cookies in frontEnd
+10 - the use of sessions for expiration date only?
+
+11 - logout => delete or post request
+
+
+12 - display personal or friends posts only? or any posts ?
+
+
+13 - show pagination (ask for HELP)
+14 - why does db.execute not working with limit and offset (didn't find anything when searched and chat doesn't help)
+
+
+17 - update post title ? content? check which one is sent? 
+18 - constants or utils
+
++++ when to use request.body / query / params
+body => data associated with post / patch / put (not header)
+
+param => ids for resources
+query => filters
+
+
+header => URL , Headers
+"/posts/1/comments/7?date=15&day=i" 
+///////////////////////
+1
+pagination => normal fn called in controller
+validation => done in 
+
+2
+unique constraint on postId and UserId   ORM
+polymorphic relation in like table or separate  to  2 table (commentId and postId)
+
+
+3
+use sequlize
+
+4 
+remove username from token 
+
+5 
+do i need sockets to keep track of the likeCounts  => future work 
+
+
+6 VIP sessions and cookies
+with each action that interacts with the database (
+    renew the expiray of session
+    when the token expires => generate new token if the session still remains
+
+) 
