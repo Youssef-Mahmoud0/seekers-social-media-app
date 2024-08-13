@@ -3,8 +3,8 @@ import PostService from '../services/postService.mjs';
 const postController = {
     getUserPosts: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const posts = await PostService.getUserPosts(userLoginInfo);
+            const userId = request.userId;
+            const posts = await PostService.getUserPosts(userId);
             return response.status(200).json(posts);
         } catch(error){
             console.error('Error getting posts:', error);
@@ -14,12 +14,10 @@ const postController = {
 
     createPost: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const post = {
-                title: request.body.title || "",
-                content: request.body.content
-            }    
-            const createdPost = await PostService.createPost(post, userLoginInfo);
+            const userId = request.userId;
+            const postContent = request.body.content;
+            
+            const createdPost = await PostService.createPost(postContent, userId);
             return response.status(201).json(createdPost);
         } catch(error){
             console.error('Error creating post:', error);
@@ -30,13 +28,11 @@ const postController = {
 
     updatePost: async (request , response) => {
         try {
-            const userLoginInfo = request.userLoginInfo;
-            const updatedPost = {
-                postId: request.params.id,
-                title: request.body.title,
-                content: request.body.content,
-            }
-            const post = await PostService.updatePost(updatedPost, userLoginInfo);
+            const userId = request.userId;
+            const postId = +request.params.postId;
+            const postContent = request.body.content;
+            
+            const post = await PostService.updatePost(postContent, postId, userId);
             return response.status(200).json(post);
 
         } catch(error){
@@ -48,10 +44,10 @@ const postController = {
 
     deletePost: async (request , response) => {
         try {
-            const userLoginInfo = request.userLoginInfo;
-            const postId = request.params.id; 
+            const userId = request.userId;
+            const postId = +request.params.postId; 
 
-            await PostService.deletePost(postId, userLoginInfo);
+            await PostService.deletePost(postId, userId);
 
             return response.status(200).json({message: "post deleted successfully"});
 
@@ -63,9 +59,57 @@ const postController = {
     },
     getPosts: async (request, response) => {
         return response.status(200).json(request.paginationResults);
-    }
+    },
 
+
+
+    likePost: async (request, response) => {
+        try{
+            const userId = request.userId;
+            const postId = +request.params.postId;
+
+            const likes = await PostService.likePost(postId, userId);
+            return response.status(200).json( likes );
+        }
+        catch(error){
+            console.error('Error Liking The Post:', error);
+            return response.status(400).json({ message: error.message });
+        }
+    },
+
+    unlikePost: async (request, response) => {
+        try{
+            const userId = request.userId;
+            const postId = +request.params.postId;
+
+            const likes = await PostService.unlikePost(postId, userId);
+            return response.status(200).json( likes );
+        }
+        catch(error){
+            console.error('Error unLiking The Post:', error);
+            return response.status(400).json({ message: error.message });
+        }
+    },
+
+    getPostLikes: async (request, response) => {
+        try{
+            const postId = +request.params.postId;
+
+            const likes = await PostService.getPostLikes(postId);
+            return response.status(200).json( likes );
+        }
+        catch(error){
+            console.error('Error getting likes for the post:', error);
+            return response.status(400).json({ message: error.message });
+        }
+    }
 
 }
 
 export default postController;
+
+
+
+
+
+

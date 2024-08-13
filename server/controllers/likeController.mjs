@@ -4,10 +4,10 @@ import LikeService from '../services/likeService.mjs';
 const likeController = {
     likePost: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const postId = request.params.postId;
+            const userId = request.userId;
+            const postId = +request.params.postId;
 
-            await LikeService.likePost(postId, userLoginInfo);
+            await LikeService.likePost(postId, userId);
             const likes = await LikeService.getPostLikes(postId);
             return response.status(200).json( likes );
         }
@@ -18,10 +18,10 @@ const likeController = {
     },
     unlikePost: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const postId = request.params.postId;
+            const userId = request.userId;
+            const postId = +request.params.postId;
 
-            await LikeService.unlikePost(postId, userLoginInfo);
+            await LikeService.unlikePost(postId, userId);
             const likes = await LikeService.getPostLikes(postId);
             return response.status(200).json( likes );
         }
@@ -32,7 +32,7 @@ const likeController = {
     },
     getPostLikes: async (request, response) => {
         try{
-            const postId = request.params.postId;
+            const postId = +request.params.postId;
             const likes = await LikeService.getPostLikes(postId);
             return response.status(200).json( likes );
         }
@@ -43,10 +43,10 @@ const likeController = {
     },
     likeComment: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const commentId = request.params.commentId;
+            const userId = request.userId;
+            const commentId = +request.params.commentId;
 
-            await LikeService.likeComment(commentId, userLoginInfo);
+            await LikeService.likeComment(commentId, userId);
             const likes = await LikeService.getCommentLikes(commentId);
             return response.status(200).json( likes );
         }
@@ -57,10 +57,10 @@ const likeController = {
     },
     unlikeComment: async (request, response) => {
         try{
-            const userLoginInfo = request.userLoginInfo;
-            const commentId = request.params.commentId;
+            const userId = request.userId;
+            const commentId = +request.params.commentId;
 
-            await LikeService.unlikeComment(commentId, userLoginInfo);
+            await LikeService.unlikeComment(commentId, userId);
             const likes = await LikeService.getCommentLikes(commentId);
             return response.status(200).json( likes );
         }
@@ -71,7 +71,7 @@ const likeController = {
     },
     getCommentLikes: async (request, response) => {
         try{
-            const commentId = request.params.commentId;
+            const commentId = +request.params.commentId;
             const likes = await LikeService.getCommentLikes(commentId);
             return response.status(200).json( likes );
         }

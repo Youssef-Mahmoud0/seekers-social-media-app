@@ -1,0 +1,48 @@
+1 - how to store passwords in dataBase (string or binary) using bcrypt and with what length
+    and are these lengths a business logic or have standards 
+    
+2 - orm usage and configurations (see and check which method is more accurate + my chat)
+
+3 - check the friendship table 
+
+4 - centralized associations or associations in each file?
+
+5 - I removed likeId, is it okay ?
+
+6 - can I define the foreign keys inside that model to increase readability ?
+    and put associations in a separate files to get the methods ?
+
+7 - ask about where the sync and associations are put
+
+8 - does this imports create an overload on the system
+
+9 - do i need to use the built in association functions or if it's easier can i directly put the foriegn key myself
+
+10 - when do we clean sessions table 
+
+11 -static async updatePost(postContent, postId, userId){
+        const result = await PostModel.updatePost(postContent, postId, userId);
+
+        if (result === 0) {
+            throw new Error('Post not updated, either post id is invalid or you are not the owner of the post');
+            // not authorized 
+        }
+        console.log("inside update Post",post)
+        return await PostModel.getPostById(postId);
+    }
+    better error message or approach?
+
+    ---------------------
+
+-> how to create from models files 
+migrations in database (check it out)
+how to call associations from the same class ?  (check gitup if stuck)
+
+
+DO:
+    define foriegn keys directly in Tables
+    migrations in database (check it out) try to change a column name
+    with every action check token and session, bothhh
+    put docker container and make requests to the docker container (locally) 
+
+

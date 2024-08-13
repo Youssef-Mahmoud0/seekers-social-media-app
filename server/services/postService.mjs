@@ -2,36 +2,51 @@ import PostModel from "../models/postModel.mjs";
 
 
 class PostService {
-    static async getUserPosts(userLoginInfo){
-        return await PostModel.getUserPosts(userLoginInfo.userId);
+    static async getUserPosts(userId){
+        return await PostModel.getUserPosts(userId);
     }
 
-    static async createPost(post, userLoginInfo){
-        const result = await PostModel.createPost(post, userLoginInfo.userId);
-        if (result.affectedRows === 0) {
-            throw new Error('Post not created');
-        }
-
-        return await PostModel.getPostById(result.insertId);
+    static async createPost(postContent, userId){
+        const post = await PostModel.createPost(postContent, userId);
+        return post.toJSON();
     }
 
-    static async updatePost(post, userLoginInfo){
-        const result = await PostModel.updatePost(post, userLoginInfo.userId);
+    static async updatePost(postContent, postId, userId){
+        await PostModel.updatePost(postContent, postId, userId);
 
-        if (result.affectedRows === 0) {
-            throw new Error('Post not updated, either post id is invalid or you are not the owner of the post');
-        }
-
-        return await PostModel.getPostById(post.postId);
+        return await PostModel.getPostById(postId);
     }
 
-    static async deletePost(postId, userLoginInfo) {
-        const result = await PostModel.deletePost(postId, userLoginInfo.userId);
-        console.log(result)
-        if (result.affectedRows === 0) {
-            throw new Error('Post not deleted, either post id is invalid or you are not the owner of the post');
-        }
+    static async deletePost(postId, userId) {
+        await PostModel.deletePost(postId, userId);
     }
+
+
+    static async likePost (postId, userId) {
+        const post = await PostModel.getPostById(postId);
+
+        await PostModel.likePost(postId, userId);
+
+        return await PostModel.getPostLikes(post);
+    }
+
+    static async unlikePost (postId, userId) {
+        const post = await PostModel.getPostById(postId);
+
+        await PostModel.unlikePost(postId, userId);
+
+        return await PostModel.getPostLikes(post);
+    }
+
+    static async getPostLikes (postId) {
+        const post = await PostModel.getPostById(postId);
+
+        return await PostModel.getPostLikes(post);
+    }
+
+
+
+
 
 }
 

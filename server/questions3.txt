@@ -1,0 +1,3 @@
+1 - ask about the friendship table (one or two entries) and see the current models
+
+2 - ask about the raw query or the double include in get firends

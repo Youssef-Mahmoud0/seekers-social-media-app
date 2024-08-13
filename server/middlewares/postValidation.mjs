@@ -1,10 +1,6 @@
 import {body, param, validationResult} from 'express-validator';
 
 export const validatePostCreation = [
-    body('title')
-        .optional()
-        .isString()
-        .withMessage('Title must be a String'),
     body('content')
         .isString()
         .notEmpty()

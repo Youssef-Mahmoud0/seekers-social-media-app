@@ -6,8 +6,8 @@ const authController = {
             username: request.body.username,
             email: request.body.email,
             password: request.body.password,
-            first_name: request.body.first_name,
-            last_name: request.body.last_name,
+            firstName: request.body.firstName,
+            lastName: request.body.lastName,
             bio: request.body.bio || ""
         }
 
@@ -35,7 +35,8 @@ const authController = {
     logout: async(request, response) => {
         try{
             const token = request.token;
-            const userId = request.userLoginInfo.userId;
+            const userId = request.userId;
+            console.log("this is the token", token, userId)
             await AuthService.logout(userId, token);
             return response.status(200).json({ message: 'User logged out successfully.' });
         }catch (error) {

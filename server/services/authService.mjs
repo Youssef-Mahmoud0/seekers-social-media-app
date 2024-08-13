@@ -6,7 +6,9 @@ class AuthService {
     static async signup(user) {
         const { username, email } = user
         // console.log(username, email)
+        
         const existingUser = await UserModel.findUser(username, email);
+
         if (existingUser) {
             throw new Error('Username already exists.');
         }
@@ -17,21 +19,21 @@ class AuthService {
 
     static async login(usernameOrEmail, password) {
         const user = await UserModel.findByUsernameOrEmail(usernameOrEmail);
-        // console.log(user);
+
         if (!user || !(await verifyPassword(password, user.password))) {
             throw new Error('Authentication failed! Invalid credentials.');
         }
 
-        const token = generateToken( {userId:user.userId, username: user.username} );
+        const token = generateToken( {userId:user.userId} );  // check this line
         const result = await SessionModel.createSession(user.userId, token, new Date(Date.now() + 1000 * 60 * 60));
-        if(result.affectedRows === 0){
+        if(result === null){
             throw new Error('Failed to create session');
         }
         
-        return token;
+        return token; 
     }
 
-    
+
     static async logout(userId, token) {
         const result = await SessionModel.deleteSession(userId, token);
         if (result.affectedRows === 0) {

@@ -18,8 +18,6 @@
     so if i send 5 posts, do i send the Likes, comments etc with all info or just when requested 
     does each entry in post and comments tables must contain a likeCount for efficeincy?
 
-6 - 
-
 7 - whenver i insert something in database, do i make a second query to get all the related objects after update?
 
 8 - in likes, i'm accessing the database 3 times ????
@@ -49,6 +47,9 @@ query => filters
 
 header => URL , Headers
 "/posts/1/comments/7?date=15&day=i" 
+
+3- photos, pdf, etc are on disk with db include path 
+
 ///////////////////////
 1
 pagination => normal fn called in controller
@@ -73,5 +74,4 @@ do i need sockets to keep track of the likeCounts  => future work
 with each action that interacts with the database (
     renew the expiray of session
     when the token expires => generate new token if the session still remains
-
 ) 

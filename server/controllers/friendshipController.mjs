@@ -5,8 +5,8 @@ const friendshipController = {
     sendFriendRequest: async (request, response) => {
 
         try {
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
+            const userId = request.userId;
+            const friendId = +request.params.friendId;
             await FriendshipService.sendFriendRequest(userId, friendId);
             return response.status(201).json({ message: 'Friend request sent successfully.' });
 
@@ -18,32 +18,21 @@ const friendshipController = {
     },
     cancelFriendRequest: async (request, response) => {
         try{
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
+            const userId = request.userId;
+            const friendId = +request.params.friendId;
             await FriendshipService.cancelFriendRequest(userId, friendId);
-            return response.status(201).json({ message: 'Friend request sent successfully.' });
+            return response.status(201).json({ message: 'Friend request canceled successfully ' });
 
         }catch(error) {
             console.error('Error canceling friend request:', error);
             return response.status(400).json({ message: error.message });
         }
     },
-    declineFriendRequest: async (request, response) => {
-        try{
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
-            await FriendshipService.declineFriendRequest(userId, friendId);
-            return response.status(201).json({ message: 'Friend request sent successfully.' });
 
-        }catch(error) {
-            console.error('Error canceling friend request:', error);
-            return response.status(400).json({ message: error.message });
-        }
-    },
     acceptFriendRequest: async (request, response) => {
         try{
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
+            const userId = request.userId;
+            const friendId = +request.params.friendId;
             await FriendshipService.acceptFriendRequest(userId, friendId);
             return response.status(201).json({ message: 'Friend request accepted successfully.' });
         }catch(error) {
@@ -54,8 +43,8 @@ const friendshipController = {
     },
     unfriend: async (request, response) => {
         try{
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
+            const userId = request.userId;
+            const friendId = +request.params.friendId;
             await FriendshipService.unfriend(userId, friendId);
             return response.status(201).json({ message: 'Friend removed successfully.' });
         }catch(error) {
@@ -64,25 +53,25 @@ const friendshipController = {
         }
 
     },
-    getFriendshipStatus: async (request, response) => {
+    getFriendshipInfo: async (request, response) => {
         try{
-            const userId = request.userLoginInfo.userId;
-            const friendId = request.params.friendId;
-            const info = await FriendshipService.getFriendshipInfo(userId, friendId);
-            return response.status(201).json({ info });
+            const userId = request.userId;
+            const friendId = +request.params.friendId;
+            const friendship = await FriendshipService.getFriendship(userId, friendId);
+            return response.status(201).json({ friendship });
         }catch(error) {
             console.error('Error getting friendship status:', error);
             return response.status(400).json({ message: error.message });
         }
     },
-    getFriends: async (req, res) => {
+    getFriends: async (request, response) => {
         try{
-            const userId = req.userLoginInfo.userId;
+            const userId = request.userId;
             const friends = await FriendshipService.getFriends(userId);
-            return res.status(201).json({ friends });
+            return response.status(201).json({ friends });
         }catch(error) {
             console.error('Error getting friends:', error);
-            return res.status(400).json({ message: error.message});
+            return response.status(400).json({ message: error.message});
         }
     },
 }

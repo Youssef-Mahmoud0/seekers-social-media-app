@@ -1,63 +1,112 @@
-import db from '../config/database.mjs'
+import Comment from './definitions/Comment.mjs';
+import CommentLike from './definitions/CommentLike.mjs';
 
 class CommentModel {
 
-    static async getAllPostComments(postId, userId) {
-        const [results] = await db.execute(
-            `SELECT * FROM comments WHERE postId = ? AND userId = ?`,
-            [postId, userId]
-        )
-        return results;
-    }
+    // static async getAllPostComments(postId, userId) {
+    //     const comments = await Comment.findAll({
+    //         where: {
+    //             postId: postId,
+    //             userId: userId
+    //         },
+    //         raw: true
+    //     });
+    //     console.log("Inside Comment Model, getAllPostComments", comments); 
+    //     return comments;
+    // }
 
     static async createComment(postId, commentContent, userId) {
-        const [result] = await db.execute(
-            `INSERT INTO comments(userId, postId, content) Values (?, ?, ?)`,
-            [userId, postId, commentContent]
-        )
-        return result;
-    }
+        const comment = await Comment.create({
+            userId: userId,
+            postId: postId,
+            content: commentContent
+        })        
 
-    static async updateComment(postId, commentId, commentContent, userId) {
-        const result = await db.execute(
-            `UPDATE comments SET content = ? WHERE userId = ? AND postId = ? AND commentId = ?`,
-            [commentContent, userId, postId, commentId]
-        );
-        return result;
-    }
-
-    static async deleteComment(postId, commentId, userId) {
-        const result = await db.execute(
-            `DELETE FROM comments WHERE userId = ? AND postId = ? AND commentId = ?`,
-            [userId, postId, commentId]
-        );
-        return result[0];
-    }
-
-    static async getCommentById(commentId) {
-        const [result] = await db.execute(
-            `SELECT * FROM comments WHERE commentId = ?`,
-            [commentId]
-        )
-        const comment = result[0];
         return comment;
     }
 
-    static async findAllWithPagination(limit, skip, postId) {
-        const [results] = await db.query(
-            `SELECT * FROM comments WHERE postId = ? LIMIT ? OFFSET ?`,
-            [postId, limit, skip]
-        )
-        return results;
+    static async updateComment(postId, commentId, commentContent, userId) {
+        const comment = await Comment.update(
+            {
+            content: commentContent
+            },
+            {
+                where: {
+                    commentId: commentId,
+                    userId: userId,
+                    postId: postId
+                }
+        })
+
+        return comment;
     }
 
-    static async getTotalResults(postId) {
-        const [result] = await db.execute(
-            `SELECT COUNT(*) as totalResults FROM comments WHERE postId = ?`,
-            [postId]
-        )
-        return result[0].totalResults;
+    static async deleteComment(postId, commentId, userId) {
+        const result = await Comment.destroy({
+            where: {
+                commentId: commentId,
+                userId: userId,
+                postId: postId
+            }
+        })
+        return result;
     }
+
+    static async getCommentById(commentId) {
+        const comment = await Comment.findByPk(commentId);
+        if(!comment){
+            throw new Error('Comment Not Found');
+        }
+
+        return comment;
+    }
+
+    static async likeComment(commentId, userId) {
+        const [like, created] = await CommentLike.findOrCreate({
+            where: {
+                commentId: commentId,
+                userId: userId
+            }
+        })
+
+        if (!created) 
+            throw new Error('Comment Already Liked');
+
+        if (!like) 
+            throw new Error('Comment Not Liked');
+    }
+    
+    static async unlikeComment(commentId, userId) {
+        const result = await CommentLike.destroy({
+            where: {
+                commentId: commentId,
+                userId: userId
+            }
+        })
+        return result;
+    }
+
+    static async getCommentLikes(comment) {
+        const likes = await comment.countLikers();
+        return likes;
+    }
+
+
+    // static async findAllWithPagination(limit, skip, postId) {
+    //     const [results] = await db.query(
+    //         `SELECT * FROM comments WHERE postId = ? LIMIT ? OFFSET ?`,
+    //         [postId, limit, skip]
+    //     )
+    //     return results;
+    // }
+
+    // static async getTotalResults(postId) {
+    //     const [result] = await db.execute(
+    //         `SELECT COUNT(*) as totalResults FROM comments WHERE postId = ?`,
+    //         [postId]
+    //     )
+    //     return result[0].totalResults;
+    // }
 }
 
 export default CommentModel;

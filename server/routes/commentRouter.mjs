@@ -7,10 +7,10 @@ import { paginationValidation } from '../middlewares/paginationValidation.mjs';
 const router = Router();
 
 // get comments by pagination
-router.get('/posts/:id/comments', paginationValidation, pagination(CommentModel), commentController.getPostComments);
+// router.get('/posts/:id/comments', paginationValidation, pagination(CommentModel), commentController.getPostComments);
 
 // get all comments for a post (Change Or it)
-router.get('/posts/:postId/comments', commentController.getAllPostComments);
+// router.get('/posts/:postId/comments', commentController.getAllPostComments);
 
 // create a new comment
 router.post('/posts/:postId/comments', commentController.createComment);
@@ -20,5 +20,14 @@ router.patch('/posts/:postId/comments/:commentId', commentController.updateComme
 
 // delete a comment with comment id
 router.delete('/posts/:postId/comments/:commentId', commentController.deleteComment);
+
+// like a comment with comment id
+router.post('/comments/:commentId/like', commentController.likeComment);
+
+// unlike a comment with comment id
+router.delete('/comments/:commentId/like', commentController.unlikeComment);
+
+// get likes for a comment with comment id (as count) may need the users when work at the front end
+router.get('/comments/:commentId/likes', commentController.getCommentLikes);
 
 export default router;

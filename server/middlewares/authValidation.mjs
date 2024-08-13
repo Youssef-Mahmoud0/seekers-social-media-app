@@ -10,11 +10,11 @@ export const validateSignup = [
     body('password')
         .isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minNumbers: 1, minSymbols: 1 })
         .withMessage('Password must be at least 8 characters long and contain at least 1 lowercase, 1 uppercase, 1 number, and 1 special character'),
-    body('first_name')
+    body('firstName')
         .isString()
         .notEmpty()
         .withMessage('First name is required'),
-    body('last_name')
+    body('lastName')
         .isString()
         .notEmpty()
         .withMessage('Last name is required'),

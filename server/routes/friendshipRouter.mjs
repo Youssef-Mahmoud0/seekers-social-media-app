@@ -13,7 +13,7 @@ router.delete('/friendship/:friendId/cancel', friendshipController.cancelFriendR
 router.patch('/friendship/:friendId/accept', friendshipController.acceptFriendRequest);    
 
 // Decline a Friend Request by the user who received it
-router.delete('/friendship/:friendId/decline', friendshipController.declineFriendRequest);
+// router.delete('/friendship/:friendId/decline', friendshipController.declineFriendRequest);
 
 // Unfriend a User
 router.delete('/friendship/:friendId', friendshipController.unfriend);

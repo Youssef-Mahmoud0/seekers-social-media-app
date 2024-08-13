@@ -13,14 +13,14 @@ export const verifyPassword = async (password, hashedPassword) => {
 }
 
 export const generateToken = (payload) =>{
-    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3m' });
+    return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 }
 // refresh token: 
 
 export const verifyToken =  (token) =>{
     try {
         const decoded =  jwt.verify(token, process.env.JWT_SECRET);
-        return decoded;
+        return decoded.userId;
     }catch(error) {
         console.error("Inside Verify Token: ", error);
         return null;
@@ -37,18 +37,20 @@ export const verifyUser = async (request, response, next) => {
     if (!token)
         return response.status(401).json({ error: 'Access denied' });
     try {
-        const userLoginInfo = verifyToken(token);
-        console.log(userLoginInfo);
-        if (!userLoginInfo)
+        const userId = verifyToken(token);
+        console.log(userId);
+        if (!userId)
             return response.status(401).send({message: "Unauthorized"});
         
-        const session = await SessionModel.getSession(userLoginInfo.userId, token);
+        const session = await SessionModel.getSession(userId, token);
         console.log(session);
         if(!session || new Date(session.expired_at) < new Date())
             return response.status(401).send({message: "Unauthorized"});
 
-        request.userLoginInfo = userLoginInfo;
-        if (request.path === '/logout') {
+        request.userId = userId;
+        console.log(token);
+        console.log(request.path)
+        if (request.path === '/auth/logout') {
             request.token = token;
         }
 

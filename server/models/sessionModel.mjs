@@ -1,31 +1,37 @@
-import db from '../config/database.mjs'
+import Session from "./definitions/Session.mjs";
 
 class SessionModel {
 
     static async getSession(userId, token) {
-        const [result] = await db.execute(
-            `SELECT * FROM sessions WHERE userId = ? AND token = ?`,
-            [userId, token]
-        )
-        return result[0];
+        const session = await Session.findOne({
+            where: {
+                userId: userId,
+                token: token
+            }
+        })
+
+        return session;
     }
 
     static async createSession(userId, token, expired_at) {
-        const [result] = await db.execute(
-            `INSERT INTO sessions(userId, token, expired_at) Values (?, ?, ?)`,
-            [userId, token, expired_at]
-        );
+        const result = await Session.create({
+            userId: userId,
+            token: token,
+            expired_at: expired_at
+        });
+
         return result;
     }
 
     static async deleteSession(userId, token) {
-        const [result] = await db.execute(
-            `DELETE FROM sessions WHERE userId = ? AND token = ?`,
-            [userId, token]
-        );
+        const result = await Session.destroy({
+            where: {
+                userId: userId,
+                token: token
+            }
+        });
         return result;
     }
-
 }
 
 export default SessionModel;
