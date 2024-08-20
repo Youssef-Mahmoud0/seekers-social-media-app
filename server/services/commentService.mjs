@@ -30,6 +30,30 @@ class CommentService {
         }
     }
 
+    static async getCommentsByPagination(page, limit, postId) {
+        const skip = (page - 1) * limit; // startIndex
+        
+        const comments = await CommentModel.getCommentsByPagination(limit, skip, postId);
+        const totalCommentsCount = await CommentModel.getTotalCommentsCount(postId);
+        
+        const paginationResults = {
+            comments: comments,
+            totalCommentsCount: totalCommentsCount,
+        };
+        
+        if(skip > 0) {
+            paginationResults.previousPage = page - 1
+        }
+        
+        const endIndex = page * limit;
+        if (endIndex < totalCommentsCount) {
+            paginationResults.nextPage = page + 1
+        }
+            
+        return paginationResults;
+    }
+
+
     static async likeComment (commentId, userId) {
         const comment = await CommentModel.getCommentById(commentId);
 

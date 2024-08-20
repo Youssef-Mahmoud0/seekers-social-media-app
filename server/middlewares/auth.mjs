@@ -38,10 +38,24 @@ export const verifyUser = async (request, response, next) => {
         return response.status(401).json({ error: 'Access denied' });
     try {
         const userId = verifyToken(token);
+        // data = userId, sessionId, 
+        // /auth/refreshtoken
+        // new token ?
+
+
+        // /post  => token expired && session not expired
+        // 
+
+        // go refresh token , /auth/refreshtoken (old token) <=> (new token)
+        // go make your original request again , /post (new token)
+
+
         console.log(userId);
         if (!userId)
             return response.status(401).send({message: "Unauthorized"});
         
+
+
         const session = await SessionModel.getSession(userId, token);
         console.log(session);
         if(!session || new Date(session.expired_at) < new Date())
@@ -49,6 +63,7 @@ export const verifyUser = async (request, response, next) => {
 
         request.userId = userId;
         console.log(token);
+
         console.log(request.path)
         if (request.path === '/auth/logout') {
             request.token = token;

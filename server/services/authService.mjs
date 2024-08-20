@@ -24,7 +24,14 @@ class AuthService {
             throw new Error('Authentication failed! Invalid credentials.');
         }
 
+        // create an empty session {sessionId}
+        // token = {
+            // userId: user.userId
+            // sessionId: sessionId
+        //}
         const token = generateToken( {userId:user.userId} );  // check this line
+
+
         const result = await SessionModel.createSession(user.userId, token, new Date(Date.now() + 1000 * 60 * 60));
         if(result === null){
             throw new Error('Failed to create session');

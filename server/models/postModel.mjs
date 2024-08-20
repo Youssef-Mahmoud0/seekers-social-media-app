@@ -99,23 +99,23 @@ class PostModel {
         return likes;
     }
 
+    static async getPostsByPagination(limit, skip) {
+        const posts = await Post.findAll({
+            limit: limit,
+            offset: skip,
+            // order: [['createdAt', 'DESC']],
+            raw: true
+        });
 
-
-    static async findAllWithPagination(limit, skip, _unUsedPostId) {
-        const [results] = await db.query(
-            `SELECT * FROM posts LIMIT ? OFFSET ?`,
-            [limit, skip]
-        )
-        return results;
+        return posts;
     }
 
-    static async getTotalResults(_unUsedPostId) {
-        const [result] = await db.execute(
-            `SELECT COUNT(*) as totalResults FROM posts`
-        )
-        return result[0].totalResults;
+    static async getTotalPostsCount() {
+        const totalPostsCount = await Post.count();
+        return totalPostsCount
     }
 
+    
 }
 
 export default PostModel;

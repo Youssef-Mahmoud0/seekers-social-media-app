@@ -57,8 +57,18 @@ const postController = {
         }
     
     },
-    getPosts: async (request, response) => {
-        return response.status(200).json(request.paginationResults);
+
+
+    getPostsByPagination: async (request, response) => {
+        const page = +request.query.page || 1;
+        const limit = +request.query.limit || 10;
+        try{
+            const paginationResults = await PostService.getPostsByPagination(page, limit);
+            return response.status(200).json(paginationResults);
+        }catch(error){
+            console.error('Error getting posts:', error);
+            return response.status(422).json({ message: error.message });
+        }
     },
 
 

@@ -46,8 +46,17 @@ const commentController = {
             return response.status(500).json({ message: error.message });              
         }
     },
-    getPostComments: async (request, response) => {
-       return response.status(200).json(request.paginationResults); 
+    getCommentsByPagination: async (request, response) => {
+        const page = +request.query.page || 1;
+        const limit = +request.query.limit || 10;
+        const postId = +request.params.postId;
+        try{
+            const paginationResults = await CommentService.getCommentsByPagination(page, limit, postId);
+            return response.status(200).json(paginationResults);
+        }catch(error){
+            console.error('Error getting posts:', error);
+            return response.status(422).json({ message: error.message });
+        }    
     },
 
     // getAllPostComments: async (request, response) => {

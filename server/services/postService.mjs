@@ -21,6 +21,31 @@ class PostService {
         await PostModel.deletePost(postId, userId);
     }
 
+    static async getPostsByPagination (page, limit) {
+        const skip = (page - 1) * limit; // startIndex
+        
+        const posts = await PostModel.getPostsByPagination(limit, skip);
+        const totalPostsCount = await PostModel.getTotalPostsCount();
+        
+        const paginationResults = {
+            posts: posts,
+            totalPostsCount: totalPostsCount,
+        };
+        
+        if(skip > 0) {
+            paginationResults.previousPage = page - 1
+        }
+        
+        const endIndex = page * limit;
+        if (endIndex < totalPostsCount) {
+            paginationResults.nextPage = page + 1
+        }
+            
+        return paginationResults;
+    }
+
+
+
 
     static async likePost (postId, userId) {
         const post = await PostModel.getPostById(postId);

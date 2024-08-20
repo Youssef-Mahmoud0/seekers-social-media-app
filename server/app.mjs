@@ -31,7 +31,7 @@ Object.values(sequelize.models).forEach((model) => {
 
 
 const port = process.env.PORT || 4000;
-sequelize.sync({alter: true}).then(() => {
+sequelize.sync().then(() => {
     console.log('Database synced');    
     app.listen(port, () => { console.log(`app running on port ${port}`) });
     

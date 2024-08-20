@@ -1,7 +1,7 @@
 import Friendship from './definitions/FriendShip.mjs';
 import User from './definitions/User.mjs';
 import { FRIENDSHIP_STATUS } from '../constants/friendshipStatus.mjs';
-import { Op, sequelize } from '../config/sequelize.mjs';
+import { Op } from '../config/sequelize.mjs';
 
 class FriendshipModel {
 
@@ -147,9 +147,5 @@ class FriendshipModel {
     }
 }
 
-
-
-// user 1   ---> 
-// user 2    OK
 
 export default FriendshipModel;

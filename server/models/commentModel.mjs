@@ -91,22 +91,26 @@ class CommentModel {
         return likes;
     }
 
+    static async getCommentsByPagination(limit, skip, postId) {
+        const comments = await Comment.findAll({
+            where: {
+                postId: postId
+            },
+            limit: limit,
+            offset: skip,
+            raw: true
+        });
+        return comments;
+    }
 
-    // static async findAllWithPagination(limit, skip, postId) {
-    //     const [results] = await db.query(
-    //         `SELECT * FROM comments WHERE postId = ? LIMIT ? OFFSET ?`,
-    //         [postId, limit, skip]
-    //     )
-    //     return results;
-    // }
-
-    // static async getTotalResults(postId) {
-    //     const [result] = await db.execute(
-    //         `SELECT COUNT(*) as totalResults FROM comments WHERE postId = ?`,
-    //         [postId]
-    //     )
-    //     return result[0].totalResults;
-    // }
+    static async getTotalCommentsCount(postId) {
+        const totalCommentsCount = await Comment.count({
+            where: {
+                postId: postId
+            }
+        });
+        return totalCommentsCount;
+    }
 }
 
 export default CommentModel;

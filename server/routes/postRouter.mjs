@@ -1,15 +1,14 @@
 import { Router } from "express";
 import postController from '../controllers/postController.mjs';
-import { pagination } from '../middlewares/pagination.mjs';
-import PostModel from "../models/postModel.mjs";
 import { validatePostCreation, validatePostUpdate, validatePostDeletion } from '../middlewares/postValidation.mjs';
 import { paginationValidation } from '../middlewares/paginationValidation.mjs';  
 const router = Router();
 
 
-// router.get('/posts', paginationValidation , pagination(PostModel) ,postController.getPosts);
+// get posts with pagination
+router.get('/posts', paginationValidation, postController.getPostsByPagination);
 
-
+// may need to use pagination for user-profile posts in the future
 // get posts for current user 
 router.get('/user-posts', postController.getUserPosts);
 
@@ -21,6 +20,10 @@ router.patch('/posts/:postId', postController.updatePost);
 
 // delete a post with post id
 router.delete('/posts/:postId', validatePostDeletion, postController.deletePost);
+
+
+//////////////////////////////////////////// Likes section
+
 
 // like a post with post id
 router.post('/posts/:postId/like', postController.likePost);

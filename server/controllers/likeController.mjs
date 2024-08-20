@@ -9,6 +9,8 @@ const likeController = {
 
             await LikeService.likePost(postId, userId);
             const likes = await LikeService.getPostLikes(postId);
+            response.locals.responseBody.likes = likes;
+
             return response.status(200).json( likes );
         }
         catch(error){
