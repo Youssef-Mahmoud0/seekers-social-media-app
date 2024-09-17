@@ -18,7 +18,7 @@
 
 9 - do i need to use the built in association functions or if it's easier can i directly put the foriegn key myself
 
-10 - when do we clean sessions table 
+10 - when do we clean sessions table
 
 11 -static async updatePost(postContent, postId, userId){
         const result = await PostModel.updatePost(postContent, postId, userId);

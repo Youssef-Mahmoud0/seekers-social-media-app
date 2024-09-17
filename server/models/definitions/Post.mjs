@@ -10,10 +10,20 @@ const Post = sequelize.define('post', {
     content: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    likersCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
+    },
+    commentsCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+        allowNull: false
     }
 })
 
-Post.associate = async (models) => {
+Post.associate = async (models) => {    
     const { user, comment, post, postLike } = models;
     post.belongsToMany(user, { through: postLike, as: 'Likers', foreignKey: 'postId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
     post.belongsTo(user, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });

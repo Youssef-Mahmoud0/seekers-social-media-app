@@ -1,0 +1,16 @@
+
+
+in signup: - add stay logged in button(remember me)
+           - add a field in db for counts likes and comments
+
+
+
+ask karanshawy:
+    - show him the sign up form
+    - show him the show password between chrome and edge
+    - signup text with or without text decoration and a button or as it is
+    
+    - username ? use or fakes
+    - where to put the animation
+    - the padding bottom is not working to leave a space at the end of the posts
+    - caret icon in edit post

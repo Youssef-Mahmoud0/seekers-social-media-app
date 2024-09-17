@@ -43,6 +43,7 @@ const postController = {
     },
 
     deletePost: async (request , response) => {
+        console.log('reach delete post')
         try {
             const userId = request.userId;
             const postId = +request.params.postId; 
@@ -60,10 +61,13 @@ const postController = {
 
 
     getPostsByPagination: async (request, response) => {
+        const userId = request.userId;
         const page = +request.query.page || 1;
         const limit = +request.query.limit || 10;
+
+
         try{
-            const paginationResults = await PostService.getPostsByPagination(page, limit);
+            const paginationResults = await PostService.getPostsByPagination(userId, page, limit);
             return response.status(200).json(paginationResults);
         }catch(error){
             console.error('Error getting posts:', error);

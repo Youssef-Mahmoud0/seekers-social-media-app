@@ -1,5 +1,6 @@
 import UserModel from '../models/userModel.mjs'
 import SessionModel from '../models/sessionModel.mjs';
+import Session from '../models/definitions/Session.mjs';
 import { hashPassword, verifyPassword, generateToken } from '../middlewares/auth.mjs'
 
 class AuthService {
@@ -10,7 +11,7 @@ class AuthService {
         const existingUser = await UserModel.findUser(username, email);
 
         if (existingUser) {
-            throw new Error('Username already exists.');
+            throw new Error('Username already exists');
         }
 
         const hashedPassword = await hashPassword(user.password);
@@ -19,25 +20,42 @@ class AuthService {
 
     static async login(usernameOrEmail, password) {
         const user = await UserModel.findByUsernameOrEmail(usernameOrEmail);
-
+        console.log("This is the user from DB: " ,user)
         if (!user || !(await verifyPassword(password, user.password))) {
-            throw new Error('Authentication failed! Invalid credentials.');
+            throw new Error('Invalid credentials');
         }
 
-        // create an empty session {sessionId}
-        // token = {
-            // userId: user.userId
-            // sessionId: sessionId
-        //}
-        const token = generateToken( {userId:user.userId} );  // check this line
+        // edit it to use the model again other time
 
+        const session = await Session.create({
+            userId: user.userId,
+            expired_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7 )
+        });
+        
+        const token = generateToken( {userId:user.userId, sessionId: session.sessionId} );
 
-        const result = await SessionModel.createSession(user.userId, token, new Date(Date.now() + 1000 * 60 * 60));
-        if(result === null){
+        session.token = token;
+        await session.save();
+
+        // end of the part to edit
+
+        // const result = await SessionModel.createSession(user.userId, token);
+        if(session === null){
             throw new Error('Failed to create session');
         }
         
-        return token; 
+        const loginData = {
+            token: token,
+            user: {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                email: user.email,
+                bio: user.bio
+            }
+        }
+
+        return loginData; 
     }
 
 

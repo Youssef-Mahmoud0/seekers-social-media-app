@@ -1,4 +1,6 @@
 import Post from "./definitions/Post.mjs"
+import User from "./definitions/User.mjs"
+import Comment from "./definitions/Comment.mjs"
 import PostLike from "./definitions/PostLike.mjs";
 
 class PostModel {
@@ -15,9 +17,9 @@ class PostModel {
         return posts;
     }
 
-    static async getPostById(postId){ 
+    static async getPostById(postId) {
         const post = await Post.findByPk(postId);
-        if(!post){
+        if (!post) {
             throw new Error('Post Not Found');
         }
 
@@ -35,7 +37,7 @@ class PostModel {
         }
 
         return post;
-    }    
+    }
 
     static async updatePost(postContent, postId, userId) {
         const result = await Post.update({
@@ -50,7 +52,7 @@ class PostModel {
         if (!result) {
             throw new Error('Post not updated, invalid credentials');
         }
-    } 
+    }
 
     static async deletePost(postId, userId) {
         const result = await Post.destroy({
@@ -63,8 +65,7 @@ class PostModel {
         if (!result) {
             throw new Error('Post not deleted, invalid credentials');
         }
-
-        // return result;
+        console.log('Post Deleted');    
     }
 
     static async likePost(postId, userId) {
@@ -75,11 +76,15 @@ class PostModel {
             }
         })
 
-        if (!created) 
+        if (!created)
             throw new Error('Post Already Liked');
 
-        if (!like) 
+        if (!like)
             throw new Error('Post Not Liked');
+
+        // Increment the likersCount in the Post table
+        await Post.increment('likersCount', { where: { postId } });
+
     }
 
     static async unlikePost(postId, userId) {
@@ -89,23 +94,45 @@ class PostModel {
                 userId: userId
             }
         });
-        
-        if (!result) 
+
+        if (!result)
             throw new Error('Post Not Unliked');
-    }
-    
-    static async getPostLikes(post) {
-        const likes = await post.countLikers();
-        return likes;
+        
+        await Post.decrement('likersCount', { where: { postId } });
+        
     }
 
-    static async getPostsByPagination(limit, skip) {
+    static getPostLikes(post) {
+        return post.likersCount;
+    }
+
+    static async getPostsByPagination(userId, limit, skip) {
+
         const posts = await Post.findAll({
-            limit: limit,
+            include: [  
+                // Include the user who created the post
+                {
+                    model: User,
+                    attributes: ['firstName', 'lastName', 'userId']
+                },
+            ],
+            limit,
             offset: skip,
-            // order: [['createdAt', 'DESC']],
-            raw: true
         });
+
+        // get the Ids of the liked posts by the user from this small set of posts
+        const likedPostsIds = await PostLike.findAll({
+            where: {
+                postId: posts.map(post => post.postId),
+                userId: userId
+            },
+            attributes: ['postId']
+        }); 
+
+        // Add the isLiked field to each post
+        posts.forEach(post => {
+            post.dataValues.isLiked = likedPostsIds.some(likedPost => likedPost.postId === post.postId);
+        });        
 
         return posts;
     }
@@ -115,7 +142,6 @@ class PostModel {
         return totalPostsCount
     }
 
-    
 }
 
 export default PostModel;

@@ -1,0 +1,132 @@
+:root {
+    --main--color: #007bff;
+    --main--color-hover: #0056b3;
+}
+
+/* Make the form wider */
+.signup-form-container {
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Grayish overlay */
+}
+    
+.signup-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    min-height: 90%;
+}
+
+.signup-form .signup-form-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.signup-form .signup-form-header i {
+    position: absolute;
+    right: 0;
+    top: -18px;
+    font-size: 20px;
+    color: #686E78;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+/* Form row for side-by-side input fields */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+/* Form group with adjusted width for side-by-side fields */
+.form-row .form-group {
+    width: 48%;
+    text-align: left;
+    /* Adjust width for two inputs per row */
+    margin-bottom: 15px;
+}
+
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    margin-left: 3px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #F5F6F7;
+    margin-bottom: 3px;
+    border-radius: 5px;
+}
+
+.error-input {
+    box-shadow: 0 0 5px #ff00009e;
+}
+
+.error-message {
+    color: #ff0000c5;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+
+.signup-button {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--main--color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.signup-button:hover {
+    background-color: var(--main--color-hover);
+}
+
+.signup-button:disabled {
+    background-color: #6c757d;
+}
+.login-text {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.login-text .link {
+    color: var(--main--color);
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-text .link:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: var(--main--color-hover);
+}

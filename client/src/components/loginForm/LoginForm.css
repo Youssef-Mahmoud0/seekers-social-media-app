@@ -1,0 +1,133 @@
+:root {
+    --main--color: #007bff;
+    --main--color-hover: #0056b3;
+}
+
+
+/* Center the form on the page */
+.login-form-container {
+    display: flex;
+    background-color: white;
+    width: 30%;
+    margin-left: -55px;
+    /* background:linear-gradient( to right,#ff6e7d, #9772a8); */
+    border-radius: 0 10px 10px 0;
+    z-index: 2;
+}
+
+.login-form {
+    /* background-color: white; */
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 100%;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #F5F6F7;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    border-color: var(--main--color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.login-button {
+    width: 100%;
+    background-color: var(--main--color);
+    color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+
+}
+
+.login-button:hover {
+    background-color: var(--main--color-hover);
+}
+
+.error-message {
+    color: #ff0000c5;
+    font-size: 14px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+}
+
+.error-input {
+    border: 2px solid red; /* Add a solid red border */
+    box-shadow: 0 0 5px #ff0000b2; /* You can keep the box-shadow if needed */
+}
+.login-error {
+    text-align: center;   
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.password-input {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.password-input input{
+    padding-right: 35px;
+}
+ 
+
+.password-icon {
+    position: absolute; 
+    right: 0;
+    top: 2px;
+    height: 100%;
+    background: transparent;
+    padding: 10px;
+    border-left: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.signup-text {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.signup-text span {
+    color: var(--main--color);
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.signup-text span:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: var(--main--color-hover);
+}

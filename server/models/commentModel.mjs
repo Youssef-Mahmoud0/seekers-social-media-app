@@ -1,4 +1,5 @@
 import Comment from './definitions/Comment.mjs';
+import Post from './definitions/Post.mjs';
 import CommentLike from './definitions/CommentLike.mjs';
 
 class CommentModel {
@@ -21,6 +22,14 @@ class CommentModel {
             postId: postId,
             content: commentContent
         })        
+
+        if (!comment)
+            throw new Error('Comment not created');
+
+        await Post.increment('commentsCount', {
+            by: 1,
+            where: { postId },
+        });
 
         return comment;
     }
@@ -49,6 +58,15 @@ class CommentModel {
                 postId: postId
             }
         })
+
+        if (!result) {
+            throw new Error('Comment not deleted or not found');
+        }
+        await Post.decrement('commentsCount', {
+            by: 1,
+            where: { postId },
+        });
+
         return result;
     }
 

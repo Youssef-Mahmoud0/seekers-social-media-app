@@ -15,6 +15,7 @@ const sequelize = new Sequelize(
 
 export {
     sequelize,
+    Sequelize,
     DataTypes,
     Op
 };

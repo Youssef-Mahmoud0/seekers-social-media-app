@@ -1,0 +1,64 @@
+:root {
+    --main--gray--color--header: #F0F2F5;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+}
+
+header div {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+header img {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    width: auto;    
+    cursor: pointer;
+}
+
+header .left-container {
+    position: relative;
+}
+
+header .left-container .search-icon{
+    position: absolute;
+    left: 67px;
+}
+
+header .left-container input {
+    margin-left: 10px;
+    padding: 10px 40px;
+    border: none;
+    border-radius: 20px;
+    background-color: var(--main--gray--color--header);
+    font-size: 17px;
+    color: #65676B;
+    letter-spacing: 0.75px;
+}
+
+header .left-container input:focus {
+    outline: none;
+}
+
+header .right-container .notification-icon {
+    margin-right: 20px;
+    font-size: 21px;
+    width: 41px;
+    height: 41px;
+    background-color: var(--main--gray--color--header);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

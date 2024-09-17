@@ -21,10 +21,10 @@ class PostService {
         await PostModel.deletePost(postId, userId);
     }
 
-    static async getPostsByPagination (page, limit) {
+    static async getPostsByPagination (userId, page, limit) {
         const skip = (page - 1) * limit; // startIndex
         
-        const posts = await PostModel.getPostsByPagination(limit, skip);
+        const posts = await PostModel.getPostsByPagination(userId, limit, skip);
         const totalPostsCount = await PostModel.getTotalPostsCount();
         
         const paginationResults = {
@@ -51,22 +51,23 @@ class PostService {
         const post = await PostModel.getPostById(postId);
 
         await PostModel.likePost(postId, userId);
-
-        return await PostModel.getPostLikes(post);
+        await post.reload();
+        console.log(post)
+        return PostModel.getPostLikes(post);
     }
 
     static async unlikePost (postId, userId) {
         const post = await PostModel.getPostById(postId);
 
         await PostModel.unlikePost(postId, userId);
-
-        return await PostModel.getPostLikes(post);
+        await post.reload();
+        return PostModel.getPostLikes(post);
     }
 
     static async getPostLikes (postId) {
         const post = await PostModel.getPostById(postId);
 
-        return await PostModel.getPostLikes(post);
+        return PostModel.getPostLikes(post);
     }
 
 

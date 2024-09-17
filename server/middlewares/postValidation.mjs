@@ -19,7 +19,7 @@ export const validatePostUpdate = [
 ];
 
 export const validatePostDeletion = [
-    param('id')
+    param('postId')
     .exists().withMessage('Post ID is required')
     .isInt({min: 1}).withMessage('Post ID must be a positive integer'),
     (request, response, next) => {
