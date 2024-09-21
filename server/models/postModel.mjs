@@ -18,30 +18,47 @@ class PostModel {
     }
 
     static async getPostById(postId) {
-        const post = await Post.findByPk(postId);
+        const post = await Post.findByPk(postId,{
+            include: [
+                {
+                    model: User,
+                    attributes: ['name', 'userId', 'profilePicture']
+                }
+            ]
+        });
         if (!post) {
             throw new Error('Post Not Found');
         }
 
+
         return post;
     }
 
-    static async createPost(postContent, userId) {
+    static async createPost(postContent, mediaFiles, userId) {
         const post = await Post.create({
             content: postContent,
-            userId: userId
+            userId: userId,
+            mediaFiles: mediaFiles.length === 0 ? null : mediaFiles
         });
 
         if (!post) {
             throw new Error('Post not created');
         }
 
+        const user = await post.getUser({
+            attributes: ['name', 'userId', 'profilePicture']
+        });
+
+        post.dataValues.user = user;
+
+
         return post;
     }
 
-    static async updatePost(postContent, postId, userId) {
+    static async updatePost(postContent, postId, mediaFiles, userId) {
         const result = await Post.update({
-            content: postContent
+            content: postContent,
+            mediaFiles: mediaFiles.length === 0 ? null : mediaFiles
         }, {
             where: {
                 postId: postId,
@@ -82,7 +99,6 @@ class PostModel {
         if (!like)
             throw new Error('Post Not Liked');
 
-        // Increment the likersCount in the Post table
         await Post.increment('likersCount', { where: { postId } });
 
     }
@@ -110,10 +126,9 @@ class PostModel {
 
         const posts = await Post.findAll({
             include: [  
-                // Include the user who created the post
                 {
                     model: User,
-                    attributes: ['firstName', 'lastName', 'userId']
+                    attributes: ['name', 'userId']
                 },
             ],
             limit,
@@ -136,6 +151,31 @@ class PostModel {
 
         return posts;
     }
+
+    static async getUserPostsByPagination(limit, skip, userId) {
+        try {
+            const posts = await Post.findAll({
+                include: [
+                    {
+                        model: User, 
+                        attributes: ['name', 'profilePicture'], 
+                        where: {
+                            userId: userId 
+                        }
+                    }
+                ],
+                limit: limit, 
+                offset: skip,  // Apply offset for pagination
+                order: [['createdAt', 'DESC']] // Order by creation date, descending
+            });
+    
+            return posts; // Return the fetched posts
+        } catch (error) {
+            console.error('Error fetching user posts:', error);
+            throw error; // Handle or re-throw the error
+        }
+    }
+
 
     static async getTotalPostsCount() {
         const totalPostsCount = await Post.count();

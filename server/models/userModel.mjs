@@ -22,11 +22,41 @@ class UserModel {
         })
         return user;
     }
-    
+
     static async create(user) {
         const createdUser = await User.create(user);
         return createdUser;
-    } 
+    }
+
+
+    static async search(query) {
+        try {
+            const results = await User.findAll({
+                where: {
+                    name: {
+                        [Op.startsWith]: `${query}`
+                    }
+                },
+                limit: 8
+            });
+            return results;
+        } catch (error) {
+            console.error('Error during search:', error);
+            throw new Error('Error during search operation');
+        }
+    };
+    static async updateProfilePicture(userId, filePath) {
+        const user = await User.findByPk(userId);
+        user.profilePicture = filePath;
+        await user.save();
+    }
+
+    static async updateBio(userId, bio) {
+        const user = await User.findByPk(userId);
+        user.bio = bio;
+        await user.save();
+    }
+
 
 }
 

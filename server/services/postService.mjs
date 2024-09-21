@@ -6,13 +6,12 @@ class PostService {
         return await PostModel.getUserPosts(userId);
     }
 
-    static async createPost(postContent, userId){
-        const post = await PostModel.createPost(postContent, userId);
-        return post.toJSON();
+    static async createPost(postContent, mediaFiles, userId){
+        return await PostModel.createPost(postContent, mediaFiles, userId);
     }
 
-    static async updatePost(postContent, postId, userId){
-        await PostModel.updatePost(postContent, postId, userId);
+    static async updatePost(postContent, postId, mediaFiles, userId){
+        await PostModel.updatePost(postContent, postId, mediaFiles, userId);
 
         return await PostModel.getPostById(postId);
     }
@@ -44,6 +43,26 @@ class PostService {
         return paginationResults;
     }
 
+    static async getUserPostsByPagination(page,limit,userId){
+        const skip = (page - 1) * limit; // startIndex
+        const posts = await PostModel.getUserPostsByPagination(limit, skip, userId);
+        const totalPostsCount = await PostModel.getTotalPostsCount();
+        const paginationResults = {
+            posts: posts,
+            totalPostsCount: totalPostsCount,
+        };
+        
+        if(skip > 0) {
+            paginationResults.previousPage = page - 1
+        }
+        
+        const endIndex = page * limit;
+        if (endIndex < totalPostsCount) {
+            paginationResults.nextPage = page + 1
+        }
+            
+        return paginationResults;
+    }
 
 
 

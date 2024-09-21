@@ -14,10 +14,15 @@ const postController = {
 
     createPost: async (request, response) => {
         try{
+
             const userId = request.userId;
             const postContent = request.body.content;
-            
-            const createdPost = await PostService.createPost(postContent, userId);
+            const mediaFiles = (request.files || []).map(file => ({
+                mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
+                path: file.path.replaceAll('\\', '/'),
+            }))
+
+            const createdPost = await PostService.createPost(postContent, mediaFiles, userId);
             return response.status(201).json(createdPost);
         } catch(error){
             console.error('Error creating post:', error);
@@ -31,8 +36,15 @@ const postController = {
             const userId = request.userId;
             const postId = +request.params.postId;
             const postContent = request.body.content;
-            
-            const post = await PostService.updatePost(postContent, postId, userId);
+            const existingMediaFiles = (request.body.existingMediaFiles || []).map(fileString => (JSON.parse(fileString)));
+
+            const newMediaFiles = (request.files || []).map(file => ({
+                mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
+                path: file.path.replaceAll('\\', '/'),
+            }))    
+            const mediaFiles = [...existingMediaFiles, ...newMediaFiles];
+
+            const post = await PostService.updatePost(postContent, postId, mediaFiles, userId);
             return response.status(200).json(post);
 
         } catch(error){
@@ -43,7 +55,6 @@ const postController = {
     },
 
     deletePost: async (request , response) => {
-        console.log('reach delete post')
         try {
             const userId = request.userId;
             const postId = +request.params.postId; 
@@ -64,7 +75,6 @@ const postController = {
         const userId = request.userId;
         const page = +request.query.page || 1;
         const limit = +request.query.limit || 10;
-
 
         try{
             const paginationResults = await PostService.getPostsByPagination(userId, page, limit);
@@ -115,6 +125,19 @@ const postController = {
         catch(error){
             console.error('Error getting likes for the post:', error);
             return response.status(400).json({ message: error.message });
+        }
+    },
+
+    getUserPostsByPagination: async(request,response) => {
+        const page = +request.query.page  ||1;
+        const limit = +request.query.limit  ||10;
+        const userId = +request.params.userId;
+        try{
+            const paginationResults = await PostService.getlUserPostsByPagination(page, limit, userId);
+            return response.status(200).json(paginationResults);
+        }catch(error){
+            console.error('Error getting user posts:', error);
+            return response.status(422).json({ message: error.message });
         }
     }
 

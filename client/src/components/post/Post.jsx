@@ -1,13 +1,25 @@
 import {useState, useEffect} from 'react';
 import './Post.css';
+import ".././composePost/ComposePost.css";
+import PostOptions from '../postOptions/PostOptions';
 import EditPost from '../editPost/EditPost';
-import ComposePost from '../composePost/ComposePost';
+
 
 function Post({post , toggleLike, isLiking, deletePost}) {
+    const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+    const [timeAgoString, setTimeAgoString] = useState('');
+    const [showEdit, setShowEdit] = useState(false);
 
+    const currentUser = JSON.parse(localStorage.getItem('user'));
     const user = post.user;
+    const mediaFiles = post.mediaFiles || [];
+    console.log("mediaFiles", mediaFiles);
+    useEffect(() => {
+        setTimeAgoString( calculateTimeAgo(post.createdAt) );
+    }, [])
 
-    function timeAgo(date) {
+
+    function calculateTimeAgo(date) {
         const now = new Date();
         const seconds = Math.floor((now - new Date(date)) / 1000);
     
@@ -39,29 +51,104 @@ function Post({post , toggleLike, isLiking, deletePost}) {
         return seconds < 30 ? 'just now' : `${seconds} seconds ago`;
     }
 
-    const timeAgoString = timeAgo(post.createdAt);
+
+    // Show the previous image
+    function handleShowPrevImage() {
+        let newIndex = currentMediaIndex - 1;
+        if (newIndex < 0) newIndex = mediaFiles.length - 1;
+
+        setCurrentMediaIndex(newIndex);
+    }
+
+    // Show the next image
+    function handleShowNextImage() {
+        let newIndex = (currentMediaIndex + 1) % mediaFiles.length;
+        setCurrentMediaIndex(newIndex);
+    }
+
+    function toggleShowEdit() {
+        setShowEdit(prevState => !prevState);
+    }
+
+
+    function renderMediaFiles() {
+        
+        const currentFile = mediaFiles[currentMediaIndex];
+        const fileURL = `${import.meta.env.VITE_BACKEND_BASE_URL}/${currentFile.path}`;
+
+        return (
+            <>
+                <div 
+                    className="media-content"
+                >
+                    {
+                        currentFile.mediaType.startsWith("image") ?
+                            <img src={fileURL} alt="Selected media" /> :
+                            <video src={fileURL} controls />
+                    }
+                </div>
+
+                {mediaFiles.length > 1 &&
+                    <div className="media-control">
+                        <i
+                            className="fa-solid fa-angle-left left-arrow"
+                            onClick={handleShowPrevImage}
+                        ></i>
+                        <p>{`${currentMediaIndex + 1}/${mediaFiles.length}`}</p>
+                        <i
+                            className="fa-solid fa-angle-right right-arrow"
+                            onClick={handleShowNextImage}
+                        ></i>
+
+                    </div>
+                }
+            </>
+        )   
+    };
 
     return(
         <div className='post-container'>
-            <ComposePost />
             <div className="top-section">
                 <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
                 <div className='text-info'>
-                    <h3>{user.firstName + " " + user.lastName}</h3>
+                    <h3>{user.name}</h3>
                     <p>{timeAgoString}</p>
                 </div>
 
-                <EditPost deletePost={() => deletePost(post.postId)}/>
-                {/* <i className="fa-solid fa-ellipsis options-icon"></i> */}
+                {
+                    currentUser.userId === post.userId &&
+                    <PostOptions 
+                        deletePost={() => deletePost(post.postId)}
+                        toggleShowEdit={toggleShowEdit}    
+                    />
+                }
+                {
+                    showEdit && 
+                    <EditPost 
+                        postMedia = {mediaFiles}
+                        postContent = {post.content} 
+                        postId = {post.postId}
+                        toggleShowEdit={toggleShowEdit}
+                    />
+                }
             </div>
             <div className="post-content">
                 <p>{post.content}</p>
             </div>
+
+            {   
+                mediaFiles.length > 0 &&
+                <div className="media-container">
+                    {renderMediaFiles()}
+                </div>
+                
+            }
+
+
             <div className="stats-section">
                 { post.likersCount > 0 && 
                     <div className="likes-stats">
                         <img src="./heart-image.svg" alt="" />
-                        {/* <i className={post.isLiked ? `fa-solid fa-heart liked` : ''}></i> */}
                         <p>{post.likersCount}</p>
                     </div>
                 }
@@ -85,7 +172,6 @@ function Post({post , toggleLike, isLiking, deletePost}) {
                         <img src="./heart-image.svg" alt="" /> :
                         <i className={`fa-regular fa-heart`}></i>
                     }
-                    {/* <i className={post.isLiked ? `fa-solid fa-heart` : `fa-regular fa-heart`}></i> */}
                     <p>Love</p>
                 </div>
                 <div className="comments">
@@ -93,7 +179,7 @@ function Post({post , toggleLike, isLiking, deletePost}) {
                     <p>Comment</p>
                 </div>  
             </div>
-            <hr />
+            {/* <hr />
             <div className="comment-section">
                 <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
                 <textarea 
@@ -105,7 +191,7 @@ function Post({post , toggleLike, isLiking, deletePost}) {
                 />
                 
 
-            </div>
+            </div> */}
         </div>
     );
 

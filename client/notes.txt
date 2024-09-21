@@ -8,9 +8,31 @@ in signup: - add stay logged in button(remember me)
 ask karanshawy:
     - show him the sign up form
     - show him the show password between chrome and edge
+ 
     - signup text with or without text decoration and a button or as it is
-    
     - username ? use or fakes
     - where to put the animation
     - the padding bottom is not working to leave a space at the end of the posts
     - caret icon in edit post
+
+
+
+to be done:
+    1- ask before delete post ✔️
+    ** on Delete check that all related data is removed from database and uploads folder
+    2- add comment and comments likes / remove / edit (ask before delete) 
+    3- edit post ✔️
+    4- notifications ( websockets )
+
+    5- Will we keep the cookie or make it (http only) 
+    6- in backend(update session and refresh token)  
+    
+    7- adding, accepting, refusing, displaying friends and their requests 😶‍🌫️  
+    8- react-toast
+    9- Arabic
+    10- dark mode
+    11- settings (change passwords)
+
+SQl
+AWS
+Vacation

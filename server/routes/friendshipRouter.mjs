@@ -21,6 +21,9 @@ router.delete('/friendship/:friendId', friendshipController.unfriend);
 // Get Friendship Status
 router.get('/friendship/:friendId/info', friendshipController.getFriendshipInfo);
 
+
+
+/// check content
 // Get Friends
 router.get('/friends', friendshipController.getFriends);
 

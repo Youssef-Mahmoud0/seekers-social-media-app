@@ -6,19 +6,27 @@ function getCookie(name) {
 }
 
 
-export const getPostsByPagination = async (page, limit) => {
+export const getPostsByPagination = async (page, limit, isUserFeed) => {
     const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
-    console.log("page:",page)
-    const response = await fetch(`${baseUrl}/posts?page=${page}&limit=${limit}`, {
+
+    let url;
+    if (isUserFeed) 
+        url = `${baseUrl}/user-posts?page=${page}&limit=${limit}`;
+    else 
+        url = `${baseUrl}/posts?page=${page}&limit=${limit}`;
+
+    
+    const response = await fetch(url, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${getCookie('token')}`
         },
     })
-
+    
     const data = await response.json();
-    // console.log(data)
+
+    console.log("this is the data we want to get: ", data);
     return data;
 }
 
@@ -71,5 +79,65 @@ export const deletePost = async (postId) => {
     }
 
     const data = await response.json();    
+    return data;
+}
+
+
+
+export const createPost = async (content, mediaFiles) => {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+    const formData = new FormData();
+    mediaFiles.forEach(file => {
+        formData.append(`mediaFiles`, file); // Add each file to the FormData
+    });
+
+    formData.append("content", content);
+    
+    console.log(formData);
+
+    const response = await fetch(`${baseUrl}/posts`, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            // 'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${getCookie('token')}`
+        },
+    })
+
+    const data = await response.json();
+
+    return data;
+}
+
+
+export const updatePost = async (postId, content, mediaFiles) => {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+    const formData = new FormData();
+    mediaFiles.forEach(file => {
+        if(file.type === "existing")
+            formData.append(`existingMediaFiles`, JSON.stringify({
+                mediaType: file.mediaType,
+                path: file.path
+            })); 
+        else{
+            formData.append(`newMediaFiles`, file.file);
+        }
+    });
+
+    formData.append("content", content);
+    
+    console.log(formData);
+
+    const response = await fetch(`${baseUrl}/posts/${postId}`, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+            // 'Content-Type': 'multipart/form-data',
+            "Authorization": `Bearer ${getCookie('token')}`
+        }
+    });
+
+    const data = await response.json();
+    console.log("this is the updated post: ", data);
     return data;
 }

@@ -3,6 +3,10 @@
 :root {
     --main--gray--color--post: #606266;
     --main--gray--color--post--hover: #F2F2F2;
+    --main--gray--color--header: #F0F2F5;
+    --main--blue--color: #007bff;
+    --main--blue--color--hover: #0056b3;
+    
 }
 
 /* Start Global Rules */

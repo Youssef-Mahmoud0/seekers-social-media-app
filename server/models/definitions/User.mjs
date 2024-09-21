@@ -9,12 +9,8 @@ const User = sequelize.define('user', {
         primaryKey: true,
         autoIncrement: true
     }, 
-    firstName: {
-        type: DataTypes.STRING(30),
-        allowNull: false
-    },
-    lastName: {
-        type: DataTypes.STRING(30),
+    name: {
+        type: DataTypes.STRING,
         allowNull: false
     },
     username: {
@@ -35,7 +31,12 @@ const User = sequelize.define('user', {
     createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
-    }
+    },
+    profilePicture:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'uploads/profile-pictures/default-profile-picture.png'
+    },
 }, {
     timestamps: false
 })

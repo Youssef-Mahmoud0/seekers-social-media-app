@@ -6,8 +6,7 @@ const authController = {
             username: request.body.username,
             email: request.body.email,
             password: request.body.password,
-            firstName: request.body.firstName,
-            lastName: request.body.lastName,
+            name: `${request.body.firstName} ${request.body.lastName}`,
             bio: request.body.bio || ""
         }
 

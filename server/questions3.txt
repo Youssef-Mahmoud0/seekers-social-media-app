@@ -5,3 +5,6 @@
 3 - images and containers ,,   VMs and docker
 
 4 - multiple routes or token in body after refresh
+
+new Questions:
+1- can userId appear in the url (username)

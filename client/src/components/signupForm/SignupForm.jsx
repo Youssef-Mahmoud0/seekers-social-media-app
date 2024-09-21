@@ -90,6 +90,7 @@ function SignupForm(props) {
             /////////////////////////
             setTimeout(() => {
                 setIsSubmitting(false);
+                props.toggleShowSignup();
             }, 1000)
 
             // // Simulate an API call
@@ -180,7 +181,11 @@ function SignupForm(props) {
                     {errors.signup && <p className="error-message">{errors.signup}</p>}
                 </div>
 
-                <button type="submit" className="signup-button" disabled={isSubmitting}>
+                <button 
+                    type="submit" 
+                    className="signup-button" 
+                    disabled={isSubmitting}
+                >
                     {isSubmitting ? 'Signing up...' : 'Sign Up'}
                 </button>
                 {/* <hr />

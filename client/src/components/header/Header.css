@@ -1,6 +1,3 @@
-:root {
-    --main--gray--color--header: #F0F2F5;
-}
 
 header {
     display: flex;
@@ -22,17 +19,18 @@ header img {
     height: 40px;
     width: 40px;
     border-radius: 50%;
-    width: auto;    
     cursor: pointer;
+
 }
 
 header .left-container {
     position: relative;
 }
 
-header .left-container .search-icon{
+header .left-container .search-icon {
     position: absolute;
     left: 67px;
+    z-index: 1000;
 }
 
 header .left-container input {
@@ -44,10 +42,75 @@ header .left-container input {
     font-size: 17px;
     color: #65676B;
     letter-spacing: 0.75px;
+    z-index: 100;
 }
 
 header .left-container input:focus {
     outline: none;
+}
+
+
+.left-container .results {
+    position: absolute;
+    top: 0;
+    left: -20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    width: 400px;
+    height: auto;
+    max-height: 500px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* Optional: style for individual result items */
+.left-container .results .result-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    height: 50px;
+    display: flex;
+    width: 100%;
+}
+
+.left-container .results .result-item:first-child {
+    margin-top: 60px;
+    border-top: none;
+}
+
+.left-container .results .result-item:last-child {
+    border-bottom: none;
+}
+
+.left-container .results .result-item:hover {
+    background-color: #f0f0f0;
+}
+
+.left-container .close-search-icon {
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.left-container .no-results {
+    padding: 10px;
+    text-align: center;
+    color: #65676B;
+    margin-top: 60px;
+}
+
+.left-container .results .result-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
 }
 
 header .right-container .notification-icon {

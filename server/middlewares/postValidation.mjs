@@ -6,6 +6,8 @@ export const validatePostCreation = [
         .notEmpty()
         .withMessage('Content is required'),
     (request, response, next) => {
+        
+        console.log(request.body); 
         const errors = validationResult(request);
         if (!errors.isEmpty()) {
             return response.status(400).json({ errors: errors.array() });

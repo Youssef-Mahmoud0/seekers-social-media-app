@@ -20,7 +20,6 @@ class AuthService {
 
     static async login(usernameOrEmail, password) {
         const user = await UserModel.findByUsernameOrEmail(usernameOrEmail);
-        console.log("This is the user from DB: " ,user)
         if (!user || !(await verifyPassword(password, user.password))) {
             throw new Error('Invalid credentials');
         }
@@ -47,9 +46,9 @@ class AuthService {
         const loginData = {
             token: token,
             user: {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                username: user.username,
+                userId: user.userId,
+                name: user.name,
+                profilePicture: user.profilePicture,
                 email: user.email,
                 bio: user.bio
             }

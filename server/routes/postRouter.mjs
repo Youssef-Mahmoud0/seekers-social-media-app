@@ -2,6 +2,7 @@ import { Router } from "express";
 import postController from '../controllers/postController.mjs';
 import { validatePostCreation, validatePostUpdate, validatePostDeletion } from '../middlewares/postValidation.mjs';
 import { paginationValidation } from '../middlewares/paginationValidation.mjs';  
+import { uploadPostMedia } from '../middlewares/mediaUpload.mjs';
 const router = Router();
 
 
@@ -10,13 +11,14 @@ router.get('/posts', paginationValidation, postController.getPostsByPagination);
 
 // may need to use pagination for user-profile posts in the future
 // get posts for current user 
-router.get('/user-posts', postController.getUserPosts);
+router.get('/user-posts/:userId',postController.getUserPostsByPagination);
+
 
 // create a new post
-router.post('/posts', validatePostCreation, postController.createPost);
+router.post('/posts', uploadPostMedia.array('mediaFiles') ,postController.createPost);
 
 // update a post with post id
-router.patch('/posts/:postId', postController.updatePost);
+router.put('/posts/:postId', uploadPostMedia.array('newMediaFiles'), postController.updatePost);
 
 // delete a post with post id
 router.delete('/posts/:postId', validatePostDeletion, postController.deletePost);
