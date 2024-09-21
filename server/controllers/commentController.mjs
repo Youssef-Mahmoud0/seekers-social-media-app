@@ -2,6 +2,7 @@ import CommentService from '../services/commentService.mjs';
 
 const commentController = {
     createComment: async (request, response) => {
+        console.log("createComment");
         try{
             const userId = request.userId;
             const postId = +request.params.postId;
@@ -47,6 +48,8 @@ const commentController = {
         }
     },
     getCommentsByPagination: async (request, response) => {
+        console.log("getCommentsByPagination");
+
         const page = +request.query.page || 1;
         const limit = +request.query.limit || 10;
         const postId = +request.params.postId;

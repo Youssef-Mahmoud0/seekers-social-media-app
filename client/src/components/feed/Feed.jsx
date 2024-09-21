@@ -8,9 +8,12 @@ import { PostContext } from '../../contexts/PostContext';
 
 function Feed({ mainRef, isUserFeed }) {
     const [posts, setPosts] = useState([]);
+    const [ActivePost, setActivePost] = useState(null);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLiking, setIsLiking] = useState(false);
+    const [postFocusShowComments, setPostFocusShowComments] = useState(false);
+
     const scrollTimeoutRef = useRef(null);  // To hold the debounce timeout
 
     // console.log("Feed rendered");
@@ -96,7 +99,6 @@ function Feed({ mainRef, isUserFeed }) {
     }
 
     async function handleUpdatePost(postId, content, mediaFiles) {
-        console.log("This is the updated Post", postId, content, mediaFiles);
         const updatedPost = await updatePost(postId, content, mediaFiles);
         setPosts(prevPosts => prevPosts.map(post => {
             return post.postId === postId ? updatedPost : post;
@@ -104,10 +106,14 @@ function Feed({ mainRef, isUserFeed }) {
 
     }
 
-    
+    function handleShowComments(post) {
+        setActivePost(post);
+        setPostFocusShowComments(true);
+    }
+
+
     return (
         <PostContext.Provider value={{ handleUpdatePost }}>
-
             <section className='feed-container'>
                 <ComposePost handleAddPost={handleAddPost} />
                 {posts.map(post =>
@@ -117,11 +123,31 @@ function Feed({ mainRef, isUserFeed }) {
                         toggleLike={toggleLike}
                         isLiking={isLiking}
                         deletePost={handleDeletePost}
+                        postFocusShowComments={postFocusShowComments}
+                        handleShowComments={handleShowComments}
                     />
                 )}
                 {!hasMore && <p>No more posts to load.</p>}
 
             </section>
+
+            { postFocusShowComments &&
+                <div className='post-overlay'>
+                    <div className='post-with-comments-container'>
+                        <Post
+                            post={ActivePost}
+                            toggleLike={toggleLike}
+                            isLiking={isLiking}
+                            deletePost={handleDeletePost}
+                            postFocusShowComments={postFocusShowComments}
+                            handleShowComments={handleShowComments}
+                        />                        
+                    </div>
+                </div>
+                
+            }
+
+
         </PostContext.Provider>
     );
 

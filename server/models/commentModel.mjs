@@ -1,5 +1,6 @@
 import Comment from './definitions/Comment.mjs';
 import Post from './definitions/Post.mjs';
+import User from './definitions/User.mjs';
 import CommentLike from './definitions/CommentLike.mjs';
 
 class CommentModel {
@@ -114,9 +115,17 @@ class CommentModel {
             where: {
                 postId: postId
             },
+            include:[
+                {
+                    model: User,
+                    as: 'Author',
+                    attributes: ['userId', 'name', 'profilePicture']
+                }
+            ],
+            
             limit: limit,
             offset: skip,
-            raw: true
+            order: [['createdAt', 'DESC']]
         });
         return comments;
     }

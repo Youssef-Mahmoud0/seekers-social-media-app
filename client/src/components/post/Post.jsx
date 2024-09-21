@@ -1,23 +1,42 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import './Post.css';
 import ".././composePost/ComposePost.css";
 import PostOptions from '../postOptions/PostOptions';
 import EditPost from '../editPost/EditPost';
+import Comment from '../comment/Comment';
+import { getPostCommentsByPagination } from '../../services/commentRequests';
 
+const limit = 5;
 
-function Post({post , toggleLike, isLiking, deletePost}) {
+function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, handleShowComments, handleHideComments }) {
     const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
     const [timeAgoString, setTimeAgoString] = useState('');
     const [showEdit, setShowEdit] = useState(false);
 
+    const [comments, setComments] = useState([]);
+    const [commentsPage, setCommentsPage] = useState(1);
+
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const user = post.user;
     const mediaFiles = post.mediaFiles || [];
-    console.log("mediaFiles", mediaFiles);
+    // console.log("mediaFiles", mediaFiles);
     useEffect(() => {
-        setTimeAgoString( calculateTimeAgo(post.createdAt) );
+        setTimeAgoString(calculateTimeAgo(post.createdAt));
     }, [])
 
+
+    useEffect(() => {
+        async function fetchComments() {
+            const commentsData = await getPostCommentsByPagination(post.postId, commentsPage, limit);
+            const { comments, nextPage } = commentsData;
+            setComments(prevComments => [...prevComments, ...comments]);
+
+            if (!nextPage) setCommentsPage(null);
+        }
+
+        fetchComments();
+    }, [])
+    
 
     function calculateTimeAgo(date) {
         const now = new Date();
@@ -31,6 +50,11 @@ function Post({post , toggleLike, isLiking, deletePost}) {
         interval = Math.floor(seconds / 2592000); // Seconds in a month
         if (interval >= 1) {
             return interval === 1 ? 'a month ago' : `${interval} months ago`;
+        }
+    
+        interval = Math.floor(seconds / 604800); // Seconds in a week
+        if (interval >= 1) {
+            return interval === 1 ? 'a week ago' : `${interval} weeks ago`;
         }
     
         interval = Math.floor(seconds / 86400); // Seconds in a day
@@ -50,7 +74,7 @@ function Post({post , toggleLike, isLiking, deletePost}) {
     
         return seconds < 30 ? 'just now' : `${seconds} seconds ago`;
     }
-
+    
 
     // Show the previous image
     function handleShowPrevImage() {
@@ -72,13 +96,13 @@ function Post({post , toggleLike, isLiking, deletePost}) {
 
 
     function renderMediaFiles() {
-        
+
         const currentFile = mediaFiles[currentMediaIndex];
         const fileURL = `${import.meta.env.VITE_BACKEND_BASE_URL}/${currentFile.path}`;
 
         return (
             <>
-                <div 
+                <div
                     className="media-content"
                 >
                     {
@@ -103,11 +127,19 @@ function Post({post , toggleLike, isLiking, deletePost}) {
                     </div>
                 }
             </>
-        )   
+        )
     };
 
-    return(
-        <div className='post-container'>
+    return (
+        <div 
+            className='post-container'
+            // some styles are changes when the comments are shown
+            style={{ 
+                marginBottom: postFocusShowComments ? '0' : '20px',
+                height: postFocusShowComments ? '100%' : '',
+                boxShadow: postFocusShowComments ? 'none' : '0 2px 5px rgba(0, 0, 0, 0.15)' 
+            }}
+        >
             <div className="top-section">
                 <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
                 <div className='text-info'>
@@ -117,81 +149,108 @@ function Post({post , toggleLike, isLiking, deletePost}) {
 
                 {
                     currentUser.userId === post.userId &&
-                    <PostOptions 
+                    <PostOptions
                         deletePost={() => deletePost(post.postId)}
-                        toggleShowEdit={toggleShowEdit}    
+                        toggleShowEdit={toggleShowEdit}
                     />
                 }
                 {
-                    showEdit && 
-                    <EditPost 
-                        postMedia = {mediaFiles}
-                        postContent = {post.content} 
-                        postId = {post.postId}
+                    showEdit &&
+                    <EditPost
+                        postMedia={mediaFiles}
+                        postContent={post.content}
+                        postId={post.postId}
                         toggleShowEdit={toggleShowEdit}
                     />
                 }
             </div>
-            <div className="post-content">
-                <p>{post.content}</p>
-            </div>
+            {
+                post.content &&
+                <div className="post-content">
+                    <p>{post.content}</p>
+                </div>
+            }
 
-            {   
+            {
                 mediaFiles.length > 0 &&
                 <div className="media-container">
                     {renderMediaFiles()}
                 </div>
-                
+
             }
 
 
             <div className="stats-section">
-                { post.likersCount > 0 && 
+                {post.likersCount > 0 &&
                     <div className="likes-stats">
                         <img src="./heart-image.svg" alt="" />
                         <p>{post.likersCount}</p>
                     </div>
                 }
-                {  post.commentsCount > 0 &&
+                {post.commentsCount > 0 &&
                     <div className="comments-stats">
-                        <i class="fa-solid fa-comment"></i>
+                        <i className="fa-solid fa-comment"></i>
                         <p>{post.commentsCount}</p>
                     </div>
                 }
             </div>
 
-            <hr />
-            <div className="bottom-section">
-                <div 
+            <div 
+                className="bottom-section"
+                style={{ 
+                    borderBottom: postFocusShowComments ? '1px solid #d6d6d6' : 'none'
+                }}
+            >
+                <div
                     className={`${post.isLiked ? 'liked' : ''}`}
                     onClick={() => !isLiking && toggleLike(post.postId, post.isLiked)}
-                    
+
                 >
                     {
-                        post.isLiked ? 
-                        <img src="./heart-image.svg" alt="" /> :
-                        <i className={`fa-regular fa-heart`}></i>
+                        post.isLiked ?
+                            <img src="./heart-image.svg" alt="" /> :
+                            <i className={`fa-regular fa-heart`}></i>
                     }
                     <p>Love</p>
                 </div>
-                <div className="comments">
+                <div 
+                    className="comments"
+                    onClick={() => handleShowComments(post)}
+                >
                     <i className="fa-regular fa-comment"></i>
                     <p>Comment</p>
-                </div>  
+                </div>
             </div>
-            {/* <hr />
-            <div className="comment-section">
-                <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
-                <textarea 
-                    placeholder="Write a comment..."
-                    onInput={(e) => {
-                        e.target.style.height = 'auto';
-                        e.target.style.height = `${e.target.scrollHeight}px`; // Adjust based on scrollHeight
-                    }}
-                />
-                
+            {
+                postFocusShowComments &&
+                <>
+                    <div className='comments-display'>
 
-            </div> */}
+                        {
+                            
+                            comments.slice().reverse().map(comment =>
+                                <Comment
+                                    key={comment.commentId}
+                                    comment={comment}
+                                />
+                            )
+
+                        }
+                    </div>
+                    <div className="comment-compose-section">
+                        <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
+                        <textarea
+                            placeholder="Write a comment..."
+                            onInput={(e) => {
+                                e.target.style.height = 'auto';
+                                e.target.style.height = `${e.target.scrollHeight}px`; // Adjust based on scrollHeight
+                            }}
+                        />
+
+
+                    </div>
+                </>
+            }
         </div>
     );
 

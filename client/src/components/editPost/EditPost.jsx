@@ -167,18 +167,18 @@ function EditPost(props) {
             </div>
             
             {
-                        showConfirmEdit &&
-                        <ConfirmAction
-                            header="Unsaved Changes"
-                            message="Changes you made will not be saved. Are you sure you want to discard?"
-                            confirmText="Discard"
-                            cancelText="Keep Editing"
-                            handleConfirm={() => {
-                                toggleShowConfirmEdit();
-                                props.toggleShowEdit();
-                            }}
-                            handleCancel={toggleShowConfirmEdit}
-                        />
+                showConfirmEdit &&
+                <ConfirmAction
+                    header="Unsaved Changes"
+                    message="Changes you made will not be saved. Are you sure you want to discard?"
+                    confirmText="Discard"
+                    cancelText="Keep Editing"
+                    handleConfirm={() => {
+                        toggleShowConfirmEdit();
+                        props.toggleShowEdit();
+                    }}
+                    handleCancel={toggleShowConfirmEdit}
+                />
             }
 
         </div>

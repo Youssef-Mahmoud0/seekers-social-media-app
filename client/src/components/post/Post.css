@@ -7,21 +7,27 @@
 
 
 .post-container {
-    padding: 12px;
-    margin-bottom: 20px;
+    padding: 12px 0;
+
+    /* margin-bottom: 20px;  must be removed when the showComment is pressed */
     background-color: white;
-    border-radius: 10px;
+    border-radius: 10px;    
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* height: 100%; */
 }
 
 .post-container .top-section {
     display: flex;
     margin-bottom: 7px;
     position: relative;
+    padding: 0 12px;
 }
 
 .post-container .top-section > img,
-.post-container .comment-section img {
+.post-container .comment-compose-section img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -68,7 +74,7 @@
 
 .post-container .post-content {
     margin-bottom: 10px;
-
+    padding: 0 12px;
 }
 
 .stats-section {
@@ -76,6 +82,7 @@
     width: 100%;
     justify-content: space-between;
     margin: 8px 0;
+    padding: 0 12px;
 }
 
 .stats-section div {
@@ -108,13 +115,17 @@
 }
 
 .post-container .media-container {
-    height: 400px;
+    min-height: 400px;
+    padding: 0 12px;
 }
 
 
 .post-container .bottom-section {
     display: flex;
     align-items: center;
+    padding: 0 12px;
+    margin: 0 12px;
+    border-top: 1px solid #d6d6d6;
 }
 
 .post-container .bottom-section div {
@@ -159,16 +170,24 @@
     height: 1px;
     background-color: #d6d6d6;
     border: none;
-
+    /* z-index: 1; */
 }
 
-.post-container .comment-section {
+.post-container .comment-compose-section {
     display: flex;
-    align-items: flex-start;
-    margin-top: 15px;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin-top:  15px;
+    padding: 10px;  
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
+    background-color: white;
 }
 
-.post-container .comment-section textarea {
+.post-container .comment-compose-section textarea {
     font-family: "Inter", Arial, Helvetica, sans-serif;
     margin-left: 10px;
     width: 100%;
@@ -182,6 +201,10 @@
 
 }
 
-.post-container .comment-section textarea:focus {
+.post-container .comment-compose-section textarea:focus {
     outline: none;
+}
+
+.post-container .comments-display {
+    padding: 0 12px;
 }

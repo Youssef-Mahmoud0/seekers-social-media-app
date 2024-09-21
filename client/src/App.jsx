@@ -3,7 +3,6 @@ import AuthPage from './pages/AuthPage/AuthPage'
 import HomePage from './pages/HomePage/HomePage'
 import ProfilePage from './pages/profilePage/ProfilePage'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import EditPost from './components/editPost/EditPost'
 
 function App() {
 
