@@ -18,7 +18,22 @@ export async function getPostCommentsByPagination(postId, page, limit) {
     });
 
     const data = await response.json();
-    console.log("this is the data we want to get: ", data);
     return data;    
+}
 
+export async function addComment(postId, content) {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+
+    const response = await fetch(`${baseUrl}/posts/${postId}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getCookie('token')}`,
+        },
+        body: JSON.stringify({ content }),
+    });
+
+    const data = await response.json();
+    console.log(data);
+    return data;
 }

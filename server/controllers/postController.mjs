@@ -36,12 +36,13 @@ const postController = {
             const userId = request.userId;
             const postId = +request.params.postId;
             const postContent = request.body.content;
-            const existingMediaFiles = (request.body.existingMediaFiles || []).map(fileString => (JSON.parse(fileString)));
 
+            const existingMediaFiles = (request.body.existingMediaFiles || []).map(fileString => (JSON.parse(fileString)));
             const newMediaFiles = (request.files || []).map(file => ({
                 mediaType: file.mimetype.startsWith('image') ? 'image' : 'video',
                 path: file.path.replaceAll('\\', '/'),
             }))    
+
             const mediaFiles = [...existingMediaFiles, ...newMediaFiles];
 
             const post = await PostService.updatePost(postContent, postId, mediaFiles, userId);

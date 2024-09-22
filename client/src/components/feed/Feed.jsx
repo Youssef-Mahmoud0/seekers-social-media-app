@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, act } from 'react';
 import './Feed.css';
 import Post from '../post/Post';
 import { getPostsByPagination, likePost, unlikePost, deletePost, updatePost } from '../../services/postRequests';
@@ -8,14 +8,14 @@ import { PostContext } from '../../contexts/PostContext';
 
 function Feed({ mainRef, isUserFeed }) {
     const [posts, setPosts] = useState([]);
-    const [ActivePost, setActivePost] = useState(null);
+    const [activePost, setActivePost] = useState(null);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLiking, setIsLiking] = useState(false);
     const [postFocusShowComments, setPostFocusShowComments] = useState(false);
 
     const scrollTimeoutRef = useRef(null);  // To hold the debounce timeout
-
+    console.log("checking for infinite loop in feed component");
     // console.log("Feed rendered");
 
 
@@ -25,7 +25,6 @@ function Feed({ mainRef, isUserFeed }) {
 
             const postsData = await getPostsByPagination(page, 5, isUserFeed);
             const { posts, nextPage } = postsData;
-            console.log(posts);
             // console.log(posts);
             setPosts(prevPosts => [...prevPosts, ...posts]);
 
@@ -39,7 +38,7 @@ function Feed({ mainRef, isUserFeed }) {
 
     async function toggleLike(postId, isLiked) {
         if (isLiking) return;
-
+        // console.log("toggleLike called");
         setIsLiking(true);
 
         try {
@@ -49,8 +48,12 @@ function Feed({ mainRef, isUserFeed }) {
             else
                 newLikersCount = await likePost(postId);
             setPosts(prevPosts => prevPosts.map(post => {
+                if (activePost && post.postId === activePost.postId) {
+                    setActivePost({ ...activePost, likersCount: newLikersCount, isLiked: !isLiked });
+                }
                 return post.postId === postId ? { ...post, likersCount: newLikersCount, isLiked: !isLiked } : post;
             }));
+
         } catch (error) {
             console.log("error from toggleLike: ", error);
         } finally {
@@ -85,7 +88,13 @@ function Feed({ mainRef, isUserFeed }) {
     async function handleDeletePost(postId) {
         try {
             await deletePost(postId);
-            setPosts(prevPosts => prevPosts.filter(post => post.postId !== postId));
+            setPosts(prevPosts => {
+                if (activePost && activePost.postId === postId) {
+                    setPostFocusShowComments(false);
+                    setActivePost(null);
+                } 
+                return prevPosts.filter(post => post.postId !== postId)
+            });
 
         } catch (error) {
             console.log("error from deletePost: ", error);
@@ -100,16 +109,24 @@ function Feed({ mainRef, isUserFeed }) {
 
     async function handleUpdatePost(postId, content, mediaFiles) {
         const updatedPost = await updatePost(postId, content, mediaFiles);
+        console.log("updatedPost: ", updatedPost);
         setPosts(prevPosts => prevPosts.map(post => {
+            if (activePost && post.postId === activePost.postId) {
+                setActivePost(updatedPost);
+            }
             return post.postId === postId ? updatedPost : post;
         }));
 
     }
 
     function handleShowComments(post) {
+        if (postFocusShowComments) return;
+
         setActivePost(post);
         setPostFocusShowComments(true);
     }
+
+
 
 
     return (
@@ -125,23 +142,26 @@ function Feed({ mainRef, isUserFeed }) {
                         deletePost={handleDeletePost}
                         postFocusShowComments={postFocusShowComments}
                         handleShowComments={handleShowComments}
+                        
                     />
                 )}
                 {!hasMore && <p>No more posts to load.</p>}
 
             </section>
 
-            { postFocusShowComments &&
+            { postFocusShowComments && activePost &&
                 <div className='post-overlay'>
                     <div className='post-with-comments-container'>
                         <Post
-                            post={ActivePost}
+                            key={activePost.postId}
+                            post={activePost}
                             toggleLike={toggleLike}
                             isLiking={isLiking}
                             deletePost={handleDeletePost}
                             postFocusShowComments={postFocusShowComments}
                             handleShowComments={handleShowComments}
-                        />                        
+                        
+                        />     
                     </div>
                 </div>
                 

@@ -32,6 +32,17 @@ class CommentModel {
             where: { postId },
         });
 
+        await comment.reload({
+            include: [
+                {
+                    model: User,
+                    as: 'Author',
+                    attributes: ['userId', 'name', 'profilePicture']
+                }
+            ]
+        });
+
+
         return comment;
     }
 

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Post.css';
 import ".././composePost/ComposePost.css";
 import PostOptions from '../postOptions/PostOptions';
 import EditPost from '../editPost/EditPost';
 import Comment from '../comment/Comment';
-import { getPostCommentsByPagination } from '../../services/commentRequests';
+import { getPostCommentsByPagination, addComment } from '../../services/commentRequests';
 
 const limit = 5;
 
@@ -15,6 +15,12 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
 
     const [comments, setComments] = useState([]);
     const [commentsPage, setCommentsPage] = useState(1);
+    const [hasMoreComments, setHasMoreComments] = useState(true);
+    const [newCommentContent, setNewCommentContent] = useState('');
+
+    // const [commentsPage, setCommentsPage] = useState(1);
+    console.log("checking for infinite loop in post component");
+
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const user = post.user;
@@ -24,18 +30,19 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
         setTimeAgoString(calculateTimeAgo(post.createdAt));
     }, [])
 
+    async function fetchComments() {
+        if (!hasMoreComments) return;
+
+        const commentsData = await getPostCommentsByPagination(post.postId, commentsPage, limit);
+        const { comments, nextPage } = commentsData;
+        setComments(prevComments => [...prevComments, ...comments]);
+
+        if (!nextPage) setHasMoreComments(false);
+    }
 
     useEffect(() => {
-        async function fetchComments() {
-            const commentsData = await getPostCommentsByPagination(post.postId, commentsPage, limit);
-            const { comments, nextPage } = commentsData;
-            setComments(prevComments => [...prevComments, ...comments]);
-
-            if (!nextPage) setCommentsPage(null);
-        }
-
         fetchComments();
-    }, [])
+    }, [commentsPage])
     
 
     function calculateTimeAgo(date) {
@@ -94,6 +101,16 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
         setShowEdit(prevState => !prevState);
     }
 
+    
+    async function handleAddComment(commentContent) {
+        const newComment = await addComment(post.postId, commentContent);
+        console.log("newCommentData", newComment); 
+        // const newComment = newCommentData.comment;
+
+        setComments(prevComments => [newComment, ...prevComments]);        
+        setNewCommentContent("");
+    }
+
 
     function renderMediaFiles() {
 
@@ -130,6 +147,15 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
         )
     };
 
+
+    function handleNewCommentContentChange(e) {
+        setNewCommentContent(e.target.value);
+        e.target.style.height = 'auto';
+        e.target.style.height = `${e.target.scrollHeight}px`; // Adjust based on scrollHeight
+    }
+
+
+
     return (
         <div 
             className='post-container'
@@ -137,7 +163,9 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
             style={{ 
                 marginBottom: postFocusShowComments ? '0' : '20px',
                 height: postFocusShowComments ? '100%' : '',
-                boxShadow: postFocusShowComments ? 'none' : '0 2px 5px rgba(0, 0, 0, 0.15)' 
+                boxShadow: postFocusShowComments ? 'none' : '0 2px 5px rgba(0, 0, 0, 0.15)' ,
+                paddingBottom: postFocusShowComments ? '0' : '12px'
+
             }}
         >
             <div className="top-section">
@@ -225,9 +253,16 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
                 postFocusShowComments &&
                 <>
                     <div className='comments-display'>
-
                         {
-                            
+                            hasMoreComments &&
+                            <h5 
+                                className='more-comments'
+                                onClick={() => setCommentsPage(prevPage => prevPage + 1)}
+                            >View more comments</h5>
+
+                        }
+                        {
+
                             comments.slice().reverse().map(comment =>
                                 <Comment
                                     key={comment.commentId}
@@ -241,12 +276,15 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
                         <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
                         <textarea
                             placeholder="Write a comment..."
-                            onInput={(e) => {
-                                e.target.style.height = 'auto';
-                                e.target.style.height = `${e.target.scrollHeight}px`; // Adjust based on scrollHeight
-                            }}
+                            value={newCommentContent}
+                            onInput={handleNewCommentContentChange}
                         />
-
+                        <i 
+                            className={`fa-solid fa-share share-icon ${newCommentContent === '' ? 'share-disabled' : 'share-enabled'}`}
+                            onClick={() => handleAddComment(newCommentContent) }
+                        >
+                            
+                        </i>
 
                     </div>
                 </>

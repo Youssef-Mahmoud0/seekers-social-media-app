@@ -9,8 +9,11 @@ class CommentService {
         if (comment === null) {
             throw new Error('comment not created');
         }
+        
 
-        return comment.toJSON();
+        
+
+        return comment;
     }
 
     static async updateComment(postId, commentId, commentContent, userId) {

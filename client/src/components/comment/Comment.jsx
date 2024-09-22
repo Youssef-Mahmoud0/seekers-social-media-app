@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Comment.css';
 
 function Comment({ comment }) {
@@ -6,14 +6,16 @@ function Comment({ comment }) {
     const [timeAgoString, setTimeAgoString] = useState('');
 
     const commentOwner = comment.Author
-    console.log(commentOwner);
     useEffect(() => {
         setTimeAgoString(calculateTimeAgo(comment.createdAt));
-    }, [comment.createdAt]);
+        
+    }, []);
 
     const toggleLike = () => {
         setIsLiked(!isLiked);
     };
+
+    console.log("checking for infinite loop in comment component");
 
     function calculateTimeAgo(date) {
             const now = new Date();
@@ -76,4 +78,4 @@ function Comment({ comment }) {
     );
 }
 
-export default Comment;
+export default React.memo(Comment);

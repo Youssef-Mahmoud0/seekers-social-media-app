@@ -25,8 +25,6 @@ export const getPostsByPagination = async (page, limit, isUserFeed) => {
     })
     
     const data = await response.json();
-
-    console.log("this is the data we want to get: ", data);
     return data;
 }
 
@@ -93,7 +91,6 @@ export const createPost = async (content, mediaFiles) => {
 
     formData.append("content", content);
     
-    console.log(formData);
 
     const response = await fetch(`${baseUrl}/posts`, {
         method: 'POST',
@@ -115,7 +112,7 @@ export const updatePost = async (postId, content, mediaFiles) => {
     const formData = new FormData();
     mediaFiles.forEach(file => {
         if(file.type === "existing")
-            formData.append(`existingMediaFiles`, JSON.stringify({
+            formData.append(`existingMediaFiles[]`, JSON.stringify({
                 mediaType: file.mediaType,
                 path: file.path
             })); 
@@ -126,7 +123,6 @@ export const updatePost = async (postId, content, mediaFiles) => {
 
     formData.append("content", content);
     
-    console.log(formData);
 
     const response = await fetch(`${baseUrl}/posts/${postId}`, {
         method: 'PUT',

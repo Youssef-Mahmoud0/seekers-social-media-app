@@ -25,6 +25,7 @@
     background-color: #f0f2f5;
     padding: 8px 12px;
     border-radius: 11px;
+    color: #050505;
     
 }
 
@@ -56,24 +57,26 @@
 }
 
 .love-button {
-    /* color: #65676b; */
+    color: #65676b;
     font-size: 13px;
     cursor: pointer;
     margin-left: 10px;
+    font-weight: 600;
 }
 
 .not-loved:hover {
     text-decoration: underline;
-    color: #65676b;
+    text-decoration-color: #65676b;
 }
 
 .loved {
     color: #EF444B;
 }
 
+
 .loved:hover {
     text-decoration: underline;
-    color: #EF444B;
+    text-decoration-color: #EF444B;
 
 }
 

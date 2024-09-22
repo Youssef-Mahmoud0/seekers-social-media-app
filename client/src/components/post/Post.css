@@ -175,7 +175,7 @@
 
 .post-container .comment-compose-section {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     position: sticky;
     bottom: 0;
     left: 0;
@@ -190,7 +190,8 @@
 .post-container .comment-compose-section textarea {
     font-family: "Inter", Arial, Helvetica, sans-serif;
     margin-left: 10px;
-    width: 100%;
+    flex: 1;
+    max-width: 86%;
     padding: 5px 15px;
     align-self: center;
     border: none;
@@ -207,4 +208,41 @@
 
 .post-container .comments-display {
     padding: 0 12px;
+}
+
+.post-container .comments-display .more-comments {
+    color: #65676b;
+    font-size: 15px;
+    margin: 10px 0;
+    cursor: pointer;
+}
+
+.post-container .comments-display .more-comments:hover {
+    text-decoration: underline;
+    text-decoration-color: #65676b;
+}
+
+
+.post-container .comment-compose-section .share-icon {
+    align-self: flex-end;
+    margin-left: auto;
+    font-size: 25px;
+    /* color: #0866FF; */
+    cursor: pointer;
+}
+
+.share-enabled {
+    color: #0866FF;
+    pointer-events: auto; 
+}
+
+.share-enabled:hover {
+    color: #0a5dc2;
+}
+
+
+.share-disabled {
+    pointer-events: none; 
+    color: var(--main--gray--color--post);
+    opacity: 0.5; 
 }
