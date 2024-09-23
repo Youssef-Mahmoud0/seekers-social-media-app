@@ -71,7 +71,6 @@ class PostService {
 
         await PostModel.likePost(postId, userId);
         await post.reload();
-        console.log(post)
         return PostModel.getPostLikes(post);
     }
 

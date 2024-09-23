@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, act } from 'react';
-import './Feed.css';
+import { useState, useEffect, useRef } from 'react';
+import './Feed.css';    
 import Post from '../post/Post';
 import { getPostsByPagination, likePost, unlikePost, deletePost, updatePost } from '../../services/postRequests';
 import ComposePost from '../composePost/ComposePost';
@@ -36,9 +36,8 @@ function Feed({ mainRef, isUserFeed }) {
 
     }, [page, isUserFeed]);
 
-    async function toggleLike(postId, isLiked) {
+    async function togglePostLike(postId, isLiked) {
         if (isLiking) return;
-        // console.log("toggleLike called");
         setIsLiking(true);
 
         try {
@@ -55,7 +54,7 @@ function Feed({ mainRef, isUserFeed }) {
             }));
 
         } catch (error) {
-            console.log("error from toggleLike: ", error);
+            console.log("error from togglePostLike: ", error);
         } finally {
             setIsLiking(false);
         }
@@ -137,7 +136,7 @@ function Feed({ mainRef, isUserFeed }) {
                     <Post
                         key={post.postId}
                         post={post}
-                        toggleLike={toggleLike}
+                        togglePostLike={togglePostLike}
                         isLiking={isLiking}
                         deletePost={handleDeletePost}
                         postFocusShowComments={postFocusShowComments}
@@ -155,7 +154,7 @@ function Feed({ mainRef, isUserFeed }) {
                         <Post
                             key={activePost.postId}
                             post={activePost}
-                            toggleLike={toggleLike}
+                            togglePostLike={togglePostLike}
                             isLiking={isLiking}
                             deletePost={handleDeletePost}
                             postFocusShowComments={postFocusShowComments}

@@ -104,6 +104,9 @@ class CommentModel {
 
         if (!like) 
             throw new Error('Comment Not Liked');
+
+        await Comment.increment('likersCount', { where: { commentId } });
+
     }
     
     static async unlikeComment(commentId, userId) {
@@ -113,15 +116,18 @@ class CommentModel {
                 userId: userId
             }
         })
-        return result;
+
+        if (!result)
+            throw new Error('Comment Not Unliked');
+
+        await Comment.decrement('likersCount', { where: { commentId } });
     }
 
     static async getCommentLikes(comment) {
-        const likes = await comment.countLikers();
-        return likes;
+        return comment.likersCount;
     }
 
-    static async getCommentsByPagination(limit, skip, postId) {
+    static async getCommentsByPagination(limit, skip, postId, userId) {
         const comments = await Comment.findAll({
             where: {
                 postId: postId
@@ -138,6 +144,19 @@ class CommentModel {
             offset: skip,
             order: [['createdAt', 'DESC']]
         });
+
+        const likedCommentsIds = await CommentLike.findAll({
+            where: {
+                commentId: comments.map(comment => comment.commentId),
+                userId: userId
+            },
+            attributes: ['commentId']
+        });
+
+        comments.forEach(comment => {
+            comment.dataValues.isLiked = likedCommentsIds.some(likedComment => likedComment.commentId === comment.commentId);
+        });  
+
         return comments;
     }
 

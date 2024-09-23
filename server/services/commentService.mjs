@@ -33,10 +33,10 @@ class CommentService {
         }
     }
 
-    static async getCommentsByPagination(page, limit, postId) {
+    static async getCommentsByPagination(page, limit, postId, userId) {
         const skip = (page - 1) * limit; // startIndex
         
-        const comments = await CommentModel.getCommentsByPagination(limit, skip, postId);
+        const comments = await CommentModel.getCommentsByPagination(limit, skip, postId, userId);
         const totalCommentsCount = await CommentModel.getTotalCommentsCount(postId);
         
         const paginationResults = {
@@ -61,22 +61,24 @@ class CommentService {
         const comment = await CommentModel.getCommentById(commentId);
 
         await CommentModel.likeComment(commentId, userId);
+        await comment.reload();
 
-        return await CommentModel.getCommentLikes(comment);
+        return CommentModel.getCommentLikes(comment);
     }
 
     static async unlikeComment (commentId, userId) {
         const comment = await CommentModel.getCommentById(commentId);
 
         await CommentModel.unlikeComment(commentId, userId);
+        await comment.reload();
 
-        return await CommentModel.getCommentLikes(comment);
+        return CommentModel.getCommentLikes(comment);
     }
 
     static async getCommentLikes (commentId) {
         const comment = await CommentModel.getCommentById(commentId);
 
-        return await CommentModel.getCommentLikes(comment);
+        return CommentModel.getCommentLikes(comment);
     }
 
 }

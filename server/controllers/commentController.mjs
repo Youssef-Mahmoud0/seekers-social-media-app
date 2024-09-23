@@ -52,9 +52,11 @@ const commentController = {
 
         const page = +request.query.page || 1;
         const limit = +request.query.limit || 10;
+        const userId = request.userId;
         const postId = +request.params.postId;
+        
         try{
-            const paginationResults = await CommentService.getCommentsByPagination(page, limit, postId);
+            const paginationResults = await CommentService.getCommentsByPagination(page, limit, postId, userId);
             return response.status(200).json(paginationResults);
         }catch(error){
             console.error('Error getting posts:', error);
@@ -79,7 +81,8 @@ const commentController = {
             const userId = request.userId;
             const commentId = +request.params.commentId;
 
-            const likes = await CommentService.likecomment(commentId, userId);
+            const likes = await CommentService.likeComment(commentId, userId);
+            console.log(likes);
             return response.status(200).json( likes );
         }
         catch(error){
@@ -93,8 +96,8 @@ const commentController = {
             const userId = request.userId;
             const commentId = +request.params.commentId;
 
-            await CommentService.unlikeComment(commentId, userId);
-            return response.status(200).json("Comment Unliked");
+            const likes = await CommentService.unlikeComment(commentId, userId);
+            return response.status(200).json( likes );
         }
         catch(error){
             console.error('Error Unliking The Comment:', error);

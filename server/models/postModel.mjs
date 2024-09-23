@@ -133,6 +133,7 @@ class PostModel {
             ],
             limit,
             offset: skip,
+            order: [['createdAt', 'DESC']],
         });
 
         // get the Ids of the liked posts by the user from this small set of posts

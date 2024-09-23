@@ -4,11 +4,11 @@ import ".././composePost/ComposePost.css";
 import PostOptions from '../postOptions/PostOptions';
 import EditPost from '../editPost/EditPost';
 import Comment from '../comment/Comment';
-import { getPostCommentsByPagination, addComment } from '../../services/commentRequests';
+import { getPostCommentsByPagination, addComment, likeComment, unlikeComment } from '../../services/commentRequests';
 
 const limit = 5;
 
-function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, handleShowComments, handleHideComments }) {
+function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComments, handleShowComments, handleHideComments }) {
     const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
     const [timeAgoString, setTimeAgoString] = useState('');
     const [showEdit, setShowEdit] = useState(false);
@@ -17,6 +17,9 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
     const [commentsPage, setCommentsPage] = useState(1);
     const [hasMoreComments, setHasMoreComments] = useState(true);
     const [newCommentContent, setNewCommentContent] = useState('');
+    const [isLikingComment, setIsLikingComment] = useState(false);
+
+
 
     // const [commentsPage, setCommentsPage] = useState(1);
     console.log("checking for infinite loop in post component");
@@ -155,6 +158,33 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
     }
 
 
+    async function toggleCommentLike(commentId, isCommentLiked) {
+        if (isLiking) return;
+        setIsLikingComment(true);
+
+        try {
+            let newLikersCount;
+            if (isCommentLiked)
+                newLikersCount = await unlikeComment(commentId);
+            else
+                newLikersCount = await likeComment(commentId);
+
+            console.log("newLikersCount: ", newLikersCount);
+
+            setComments(prevComments => prevComments.map(comment => {
+                return comment.commentId === commentId ? 
+                    { ...comment, isLiked: !isCommentLiked, likersCount: newLikersCount } : comment;
+            }))
+        } catch (error) {
+            console.log("error from togglePostLike: ", error);
+        } finally {
+            setIsLikingComment(false);
+        }
+    }
+
+
+
+
 
     return (
         <div 
@@ -231,7 +261,7 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
             >
                 <div
                     className={`${post.isLiked ? 'liked' : ''}`}
-                    onClick={() => !isLiking && toggleLike(post.postId, post.isLiked)}
+                    onClick={() => !isLiking && togglePostLike(post.postId, post.isLiked)}
 
                 >
                     {
@@ -267,6 +297,8 @@ function Post({ post, toggleLike, isLiking, deletePost, postFocusShowComments, h
                                 <Comment
                                     key={comment.commentId}
                                     comment={comment}
+                                    toggleCommentLike={toggleCommentLike}
+                                    isLiking={isLikingComment}
                                 />
                             )
 

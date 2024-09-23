@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
+    import React, { useState, useEffect } from 'react';
 import './Comment.css';
 
-function Comment({ comment }) {
-    const [isLiked, setIsLiked] = useState(false);
+function Comment({ comment, isLiking , toggleCommentLike }) {
+    // const [isLiked, setIsLiked] = useState(false);
     const [timeAgoString, setTimeAgoString] = useState('');
 
     const commentOwner = comment.Author
     useEffect(() => {
         setTimeAgoString(calculateTimeAgo(comment.createdAt));
-        
+        console.log(comment)
     }, []);
 
-    const toggleLike = () => {
-        setIsLiked(!isLiked);
-    };
+    // function toggleLike() {
+    //     setIsLiked(!isLiked);
+    // };
 
     console.log("checking for infinite loop in comment component");
 
@@ -63,7 +63,10 @@ function Comment({ comment }) {
                 </div>
                 <div className="comment-actions">
                     <span className="time-ago">{timeAgoString}</span>
-                    <span className={`love-button ${isLiked ? 'loved' : 'not-loved'}`} onClick={toggleLike}>
+                    <span 
+                        className={`love-button ${comment.isLiked ? 'loved' : 'not-loved'}`} 
+                        onClick={ () => !isLiking && toggleCommentLike(comment.commentId, comment.isLiked) }
+                    >
                         Love
                     </span>
                     {comment.likersCount > 0 && (

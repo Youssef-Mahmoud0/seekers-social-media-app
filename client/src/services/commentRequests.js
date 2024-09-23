@@ -37,3 +37,36 @@ export async function addComment(postId, content) {
     console.log(data);
     return data;
 }
+
+
+
+
+export async function likeComment(commentId) {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+
+    const response = await fetch(`${baseUrl}/comments/${commentId}/like`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}`,
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+export async function unlikeComment(commentId) {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+
+    const response = await fetch(`${baseUrl}/comments/${commentId}/like`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}`,
+        },
+    });
+
+    const data = await response.json();
+    return data;
+}
