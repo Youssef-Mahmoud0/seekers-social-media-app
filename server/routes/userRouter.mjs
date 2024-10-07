@@ -8,4 +8,5 @@ const router = Router();
 router.post('/upload-profile-picture', uploadProfilePicture.single('profilePicture'), userController.uploadProfilePicture);
 router.post('/search', userController.search);
 router.post('/update-bio', userController.updateBio);
+router.get('/users/:userId', userController.getUserById);
 export default router;

@@ -5,7 +5,7 @@ class FriendshipService {
 
     static async sendFriendRequest(userId, friendId) {
         // check if userId and friendId are the same
-        if(userId === friendId) 
+        if (userId === friendId)
             throw new Error('Cannot send friend request to yourself');
 
         // initiatorId is the one who sent the friend request (current userId)        
@@ -16,8 +16,12 @@ class FriendshipService {
         const smallerId = Math.min(userId, friendId);
         const largerId = Math.max(userId, friendId);
 
-        await FriendshipModel.sendFriendRequest(smallerId, largerId, initiatorId);
-
+        const friendship = await FriendshipModel.sendFriendRequest(smallerId, largerId, initiatorId);
+        const friendshipInfo = {
+            status: friendship.status,
+            initiatorId: friendship.initiatorId
+        }
+        return friendshipInfo;
     }
 
     // the one who sent the friend request is the one who cancel it
@@ -27,11 +31,12 @@ class FriendshipService {
         const largerId = Math.max(userId, friendId);
 
         const friendship = await FriendshipModel.getFriendship(smallerId, largerId);
-        if(!friendship || friendship.status !== FRIENDSHIP_STATUS.PENDING) 
+        if (!friendship || friendship.status !== FRIENDSHIP_STATUS.PENDING)
             throw new Error('No friend request to cancel');
 
         await FriendshipModel.cancelFriendRequest(friendship);
-    }    
+        return {}
+    }
 
     static async acceptFriendRequest(userId, friendId) {
 
@@ -39,14 +44,20 @@ class FriendshipService {
         const largerId = Math.max(userId, friendId);
 
         const friendship = await FriendshipModel.getFriendship(smallerId, largerId);
-        if(!friendship || friendship.status !== FRIENDSHIP_STATUS.PENDING) 
+        if (!friendship || friendship.status !== FRIENDSHIP_STATUS.PENDING)
             throw new Error('No friend request to accept');
 
-        if(userId === friendship.initiatorId) {
+        if (userId === friendship.initiatorId) {
             throw new Error('Invalid Action. Cannot accept your own friend request');
         }
 
         await FriendshipModel.acceptFriendRequest(friendship);
+
+        const friendshipInfo = {
+            status: FRIENDSHIP_STATUS.ACCEPTED,
+            initiatorId: friendship.initiatorId
+        };
+        return friendshipInfo;
     }
 
     static async unfriend(userId, friendId) {
@@ -54,18 +65,31 @@ class FriendshipService {
         const largerId = Math.max(userId, friendId);
 
         const friendship = await FriendshipModel.getFriendship(smallerId, largerId);
-        if(!friendship || friendship.status !== FRIENDSHIP_STATUS.ACCEPT) 
+        if (!friendship || friendship.status !== FRIENDSHIP_STATUS.ACCEPTED)
             throw new Error('Invalid unfriend operation');
 
         await FriendshipModel.unfriend(friendship);
+        return {};
+
     }
 
     static async getFriendship(userId, friendId) {
-        const friendship =  await FriendshipModel.getFriendship(userId, friendId);
+        const smallerId = Math.min(userId, friendId);
+        const largerId = Math.max(userId, friendId);
+
+        const friendship = await FriendshipModel.getFriendship(smallerId, largerId);
+        if (!friendship) {
+            return{};
+        }
+        const friendshipInfo = {
+            status: friendship.status,
+            initiatorId: friendship.initiatorId,
+        };
         if (!friendship) {
             throw new Error('No friendship found');
         }
-        return friendship.toJSON();
+        return friendshipInfo;
+
     }
 
     static async getFriends(userId) {
@@ -74,6 +98,11 @@ class FriendshipService {
         console.log(jsonFriends);
         return jsonFriends;
 
+    }
+
+    static async getFriendsByPagination(skip, limit, userId) {
+        const paginationResults = await FriendshipModel.getFriendsByPagination(skip, limit, userId);
+        return paginationResults;
     }
 }
 

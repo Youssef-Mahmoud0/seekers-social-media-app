@@ -4,11 +4,21 @@ import ".././composePost/ComposePost.css";
 import PostOptions from '../postOptions/PostOptions';
 import EditPost from '../editPost/EditPost';
 import Comment from '../comment/Comment';
-import { getPostCommentsByPagination, addComment, likeComment, unlikeComment } from '../../services/commentRequests';
+import { getPostCommentsByPagination, addComment, likeComment, unlikeComment, deleteComment } from '../../services/commentRequests';
 
 const limit = 5;
 
-function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComments, handleShowComments, handleHideComments }) {
+function Post({ 
+        post, 
+        togglePostLike, 
+        isLiking, 
+        deletePost, 
+        postFocusShowComments, 
+        handleShowComments, 
+        handleHideComments,
+        handleIncreaseCommentsCount,
+        handleDecreaseCommentsCount
+    }) {
     const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
     const [timeAgoString, setTimeAgoString] = useState('');
     const [showEdit, setShowEdit] = useState(false);
@@ -107,8 +117,7 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
     
     async function handleAddComment(commentContent) {
         const newComment = await addComment(post.postId, commentContent);
-        console.log("newCommentData", newComment); 
-        // const newComment = newCommentData.comment;
+        handleIncreaseCommentsCount();
 
         setComments(prevComments => [newComment, ...prevComments]);        
         setNewCommentContent("");
@@ -183,7 +192,15 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
     }
 
 
-
+    async function handleDeleteComment(commentId) {
+        try {
+            await deleteComment(post.postId, commentId);
+            setComments(prevComments => prevComments.filter(comment => comment.commentId !== commentId));
+            handleDecreaseCommentsCount();
+        } catch (error) {
+            console.log("error from deleteComment: ", error);
+        }
+    }
 
 
     return (
@@ -194,10 +211,21 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
                 marginBottom: postFocusShowComments ? '0' : '20px',
                 height: postFocusShowComments ? '100%' : '',
                 boxShadow: postFocusShowComments ? 'none' : '0 2px 5px rgba(0, 0, 0, 0.15)' ,
-                paddingBottom: postFocusShowComments ? '0' : '12px'
+                paddingBlock: postFocusShowComments ? '0' : '12px'
 
             }}
         >
+
+            {/* Sticky Header with Post Author's Name and Close Icon */}
+            {postFocusShowComments && (
+                <div className="sticky-header">
+                    <h3>{post.user.name.split(' ')[0]}<span>'s Post</span></h3>
+                    <i className="fa-solid fa-times close-icon" onClick={handleHideComments}></i>
+                </div>
+            )}
+
+
+
             <div className="top-section">
                 <img src={`${import.meta.env.VITE_BACKEND_BASE_URL}/uploads/profile-pictures/default-profile-picture.png`} alt="" />
                 <div className='text-info'>
@@ -231,7 +259,12 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
 
             {
                 mediaFiles.length > 0 &&
-                <div className="media-container">
+                <div
+                    style={{
+                        minHeight: mediaFiles.length > 1 ? '400px' : '350px'
+                    }} 
+                    className="media-container"
+                >
                     {renderMediaFiles()}
                 </div>
 
@@ -241,7 +274,7 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
             <div className="stats-section">
                 {post.likersCount > 0 &&
                     <div className="likes-stats">
-                        <img src="./heart-image.svg" alt="" />
+                        <img src=".././heart-image.svg" alt="" />
                         <p>{post.likersCount}</p>
                     </div>
                 }
@@ -266,7 +299,7 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
                 >
                     {
                         post.isLiked ?
-                            <img src="./heart-image.svg" alt="" /> :
+                            <img src=".././heart-image.svg" alt="" /> :
                             <i className={`fa-regular fa-heart`}></i>
                     }
                     <p>Love</p>
@@ -299,6 +332,8 @@ function Post({ post, togglePostLike, isLiking, deletePost, postFocusShowComment
                                     comment={comment}
                                     toggleCommentLike={toggleCommentLike}
                                     isLiking={isLikingComment}
+                                    isPostOwner={currentUser.userId === post.userId}
+                                    deleteComment={handleDeleteComment}
                                 />
                             )
 

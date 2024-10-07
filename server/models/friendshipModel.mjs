@@ -26,6 +26,7 @@ class FriendshipModel {
                 throw new Error('You are already friends');
             }
         }
+        return friendship;  
 
     }
 
@@ -83,6 +84,41 @@ class FriendshipModel {
             attributes: ['userId', 'name', 'profilePicture']
         });
         return friends;
+    }
+
+
+    static async getFriendsByPagination(skip, limit, userId) {
+        const friendships = await Friendship.findAll({
+            where: {
+                status: FRIENDSHIP_STATUS.ACCEPTED,
+                [Op.or]: [
+                    { userId1: userId },
+                    { userId2: userId }
+                ]
+            }
+        });
+    
+        const friendIds = friendships.map(friendship => {
+            return friendship.userId1 === userId ? friendship.userId2 : friendship.userId1;
+        });
+    
+        const totalPages = Math.ceil(friendIds.length/limit);
+        const paginatedFriends = await User.findAll({
+            where: {
+                userId: {
+                    [Op.in]: friendIds
+                }
+            },
+            attributes: ['userId', 'name', 'profilePicture'],
+            limit: limit,
+            offset:skip
+        });
+    
+        // Return both friends and total count
+        return {
+            friends: paginatedFriends.map(friend => friend.toJSON()),
+            totalPages: totalPages
+        };
     }
 }
 

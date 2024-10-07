@@ -70,3 +70,20 @@ export async function unlikeComment(commentId) {
     const data = await response.json();
     return data;
 }
+
+
+export async function deleteComment(postId, commentId) {
+    const baseUrl = import.meta.env.VITE_BACKEND_BASE_URL;
+
+    const response = await fetch(`${baseUrl}/posts/${postId}/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getCookie('token')}`,
+        },
+    });
+
+    const data = await response.json();
+    console.log("inside delete request: ",data);
+    return data;
+}

@@ -35,7 +35,7 @@ class CommentModel {
         await comment.reload({
             include: [
                 {
-                    model: User,
+                    model: User,    
                     as: 'Author',
                     attributes: ['userId', 'name', 'profilePicture']
                 }

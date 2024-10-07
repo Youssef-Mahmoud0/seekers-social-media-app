@@ -42,7 +42,18 @@ const userController = {
             console.error('Error updating bio:', error);
             return response.status(500).json({ message: error.message });
         }
+    },
+    getUserById: async (request, response) => {
+        try {
+            const { userId } = request.params;
+            const user = await userService.getUserById(userId);
+            return response.status(200).json(user);
+        } catch (error) {
+            console.error('Error getting user by id:', error);
+            return response.status(500).json({ message: error.message });
+        }
     }
+
 }
 
 export default userController;

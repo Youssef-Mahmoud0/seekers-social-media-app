@@ -57,7 +57,13 @@ class UserModel {
         await user.save();
     }
 
+    static async getUserById(userId) {
+        const user = await User.findByPk(userId, {
+            attributes: ['userId', 'name', 'bio', 'profilePicture']
+        });
+        return user;
+    }
 
 }
-
+    
 export default UserModel;

@@ -12,11 +12,9 @@ function App() {
                 <Routes>
                     <Route path="/" element={<AuthPage />} />
                     <Route path='/home' element={<HomePage />} />
-                    <Route path='/profile' element={<ProfilePage />} />
-                    {/* <Route path="/signup" element={<SignupForm />} /> */}
-                    </Routes>
+                    <Route path='/profile/:userId' element={<ProfilePage/>} />
+                </Routes>
             </Router>
-            {/* <EditPost /> */}
         </>
     )
 }

@@ -1,12 +1,19 @@
+import { useEffect, useRef } from 'react';
+
 import Header from "../../components/header/Header";
 import Feed from "../../components/feed/Feed";
-import { useRef } from 'react';
+import { getWebSocket } from '../../webSocket';
 
 import './HomePage.css';
 
 function HomePage() {
     const mainRef = useRef(null);
     const isUserFeed = false;
+
+    useEffect(() => {
+        // const ws = getWebSocket(JSON.parse(localStorage.getItem('user')).userId);
+    }, []);
+
 
 
     return (    

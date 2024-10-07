@@ -1,5 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import http from 'http';
+
 
 import authRouter from './routes/authRouter.mjs';
 import postRouter from './routes/postRouter.mjs'
@@ -9,12 +13,12 @@ import userRouter from './routes/userRouter.mjs';
 import { verifyUser } from './middlewares/auth.mjs';
 import {sequelize} from './config/sequelize.mjs';
 
+// websocket configuration 
+import { configureWebSocket } from './config/ws.mjs';
 
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 const app = express();
-
 dotenv.config();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -22,12 +26,8 @@ app.use(cors({
 }));
 
 app.use('/uploads/profile-pictures', express.static('uploads/profile-pictures'));
-app.use('/uploads/posts-media', express.static('uploads/posts-media'));
-
+app.use('/uploads/posts-media', express.static('uploads/posts-media')); 
 app.use(authRouter);
-
-
-
 app.use(verifyUser); 
 app.use(userRouter);
 app.use(postRouter);
@@ -42,9 +42,12 @@ Object.values(sequelize.models).forEach((model) => {
 
 
 const port = process.env.PORT || 4000;
+const server = http.createServer(app);
+configureWebSocket(server);
+
 sequelize.sync().then(() => {  
-    console.log('Database synced');    
-    app.listen(port, () => { console.log(`app running on port ${port}`) });
+
+    server.listen(port, () => { console.log(`server running on port ${port}`) });
 }).catch((err) => {
     console.log('Error syncing database', err);
-});
+}); 

@@ -7,8 +7,11 @@ const friendshipController = {
         try {
             const userId = request.userId;
             const friendId = +request.params.friendId;
-            await FriendshipService.sendFriendRequest(userId, friendId);
-            return response.status(201).json({ message: 'Friend request sent successfully.' });
+            console.log("this is the friend id", friendId);
+            console.log("this is the user id", userId);
+
+            const friendshipInfo = await FriendshipService.sendFriendRequest(userId, friendId);
+            return response.status(201).json(friendshipInfo);
 
         }catch(error) {
             console.error('Error sending friend request:', error);
@@ -20,8 +23,8 @@ const friendshipController = {
         try{
             const userId = request.userId;
             const friendId = +request.params.friendId;
-            await FriendshipService.cancelFriendRequest(userId, friendId);
-            return response.status(201).json({ message: 'Friend request canceled successfully ' });
+            const friendshipInfo = await FriendshipService.cancelFriendRequest(userId, friendId);
+            return response.status(201).json({friendshipInfo});
 
         }catch(error) {
             console.error('Error canceling friend request:', error);
@@ -33,8 +36,8 @@ const friendshipController = {
         try{
             const userId = request.userId;
             const friendId = +request.params.friendId;
-            await FriendshipService.acceptFriendRequest(userId, friendId);
-            return response.status(201).json({ message: 'Friend request accepted successfully.' });
+            const friendshipInfo = await FriendshipService.acceptFriendRequest(userId, friendId);
+            return response.status(201).json({friendshipInfo});
         }catch(error) {
             console.error('Error accepting friend request:', error);
             return response.status(400).json({ message: error.message });
@@ -45,8 +48,8 @@ const friendshipController = {
         try{
             const userId = request.userId;
             const friendId = +request.params.friendId;
-            await FriendshipService.unfriend(userId, friendId);
-            return response.status(201).json({ message: 'Friend removed successfully.' });
+            const friendshipInfo = await FriendshipService.unfriend(userId, friendId);
+            return response.status(201).json({friendshipInfo});
         }catch(error) {
             console.error('Error removing friend:', error);
             return response.status(400).json({ message: error.message });
@@ -58,22 +61,36 @@ const friendshipController = {
             const userId = request.userId;
             const friendId = +request.params.friendId;
             const friendship = await FriendshipService.getFriendship(userId, friendId);
-            return response.status(201).json({ friendship });
+            console.log("this is the friendship", friendship);
+            return response.status(201).json( friendship );
         }catch(error) {
             console.error('Error getting friendship status:', error);
             return response.status(400).json({ message: error.message });
         }
     },
-    getFriends: async (request, response) => {
+    // getFriends: async (request, response) => {
+    //     try{
+    //         const userId = request.userId;
+    //         const friends = await FriendshipService.getFriends(userId);
+    //         return response.status(201).json({ friends });
+    //     }catch(error) {
+    //         console.error('Error getting friends:', error);
+    //         return response.status(400).json({ message: error.message});
+    //     }
+    // },
+
+    getUserFriendsByPagination: async (req,res) =>{
+        const userId = +req.params.userId;
+        const page = +req.query.page ||1;
+        const limit = +req.query.limit||9;
+        const skip = (page - 1) * limit;
         try{
-            const userId = request.userId;
-            const friends = await FriendshipService.getFriends(userId);
-            return response.status(201).json({ friends });
-        }catch(error) {
-            console.error('Error getting friends:', error);
-            return response.status(400).json({ message: error.message});
+            const paginationResults = await FriendshipService.getFriendsByPagination(skip,limit,userId);
+            res.status(200).json({ paginationResults });
+        }   catch(error){
+            res.status(400).json({ error: error.message });
         }
-    },
+    }
 }
 
 export default friendshipController;

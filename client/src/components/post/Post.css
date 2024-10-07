@@ -8,19 +8,53 @@
 
 .post-container {
     padding: 12px 0;
-
-    /* margin-bottom: 20px;  must be removed when the showComment is pressed */
     background-color: white;
     border-radius: 10px;    
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     position: relative;
     display: flex;
     flex-direction: column;
-    /* height: 100%; */
+}
+
+
+.post-container .sticky-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    padding: 25px 12px;
+    border-bottom: 1px solid #d6d6d6;
+    margin-bottom: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.sticky-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #050505;
+}
+
+.sticky-header span {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.sticky-header .close-icon {
+    font-size: 20px;
+    cursor: pointer;
+    color: #65676b;
+}
+
+.sticky-header .close-icon:hover {
+    color: #333;
 }
 
 .post-container .top-section {
     display: flex;
+    justify-content: flex-start;
     margin-bottom: 7px;
     position: relative;
     padding: 0 12px;

@@ -1,0 +1,59 @@
+/* .options-container {
+    position: relative; 
+    display: inline;
+    margin-left: 5px;
+    align-self: center;
+}
+
+.options-container .options-icon {
+    border-radius: 50%;
+    padding: 5px;
+    color: rgb(107, 106, 106);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.options-icon-container .options-icon:hover {
+    background-color: #f2f2f2;
+}
+
+
+.options {
+    background-color: white;
+    position: absolute; 
+    padding: 5px;
+    right: 0px;
+    top: 30px; 
+    width: 150px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.caret-icon {
+    position: absolute;
+    top: -10px; 
+    right: 5px; 
+    font-size: 20px;
+    color: white;
+    text-shadow: 4px -5px 10px rgba(0, 0, 0, 0.1), -4px -5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.option {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    color: var(--main--gray--color--post);
+    font-size: 12px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.option:hover {
+    background-color: var(--main--gray--color--post--hover);
+    cursor: pointer;
+}
+
+.option i {
+    margin-right: 8px;
+} */

@@ -42,7 +42,9 @@ const User = sequelize.define('user', {
 })
 
 User.associate = async (models) => {
-    const { post, comment, session, user ,  } = models;
+    const { post, comment, session, user
+        
+      } = models;
     
     user.hasMany(post, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
     user.hasMany(comment, { foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE' });

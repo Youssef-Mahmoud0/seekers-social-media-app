@@ -1,0 +1,61 @@
+.options-icon-container {
+    position: relative; /* Set this container relative to position its children */
+    display: inline-block;
+    margin-left: 5px;
+    align-self: center;
+    margin-bottom: 16px;
+}
+
+.options-icon-container .options-icon {
+    border-radius: 50%;
+    padding: 5px;
+    color: rgb(107, 106, 106);
+    font-size: 20px;
+    cursor: pointer;
+    /* display: none;  */
+}
+
+.options-icon-container .options-icon:hover {
+    background-color: #f2f2f2;
+}
+
+
+.options-container {
+    background-color: white;
+    position: absolute; /* Now it's relative to the icon container */
+    padding: 5px;
+    right: 0px;
+    top: 30px; /* Adjust to place below the icon */
+    width: 200px;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.caret-icon {
+    position: absolute;
+    top: -10px; /* Adjust to match the container */
+    right: 5px; /* Adjust for better positioning */
+    font-size: 20px;
+    color: white;
+    text-shadow: 4px -5px 10px rgba(0, 0, 0, 0.1), -4px -5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.option {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    color: var(--main--gray--color--post);
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.option:hover {
+    background-color: var(--main--gray--color--post--hover);
+    cursor: pointer;
+}
+
+.option i {
+    margin-right: 12px;
+}

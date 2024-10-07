@@ -12,9 +12,6 @@ router.delete('/friendship/:friendId/cancel', friendshipController.cancelFriendR
 // Accept a Friend Request
 router.patch('/friendship/:friendId/accept', friendshipController.acceptFriendRequest);    
 
-// Decline a Friend Request by the user who received it
-// router.delete('/friendship/:friendId/decline', friendshipController.declineFriendRequest);
-
 // Unfriend a User
 router.delete('/friendship/:friendId', friendshipController.unfriend);
 
@@ -22,10 +19,8 @@ router.delete('/friendship/:friendId', friendshipController.unfriend);
 router.get('/friendship/:friendId/info', friendshipController.getFriendshipInfo);
 
 
-
 /// check content
-// Get Friends
-router.get('/friends', friendshipController.getFriends);
+router.get('/friendship/:userId', friendshipController.getUserFriendsByPagination);
 
 
 export default router;

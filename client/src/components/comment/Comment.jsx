@@ -1,7 +1,8 @@
-    import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Comment.css';
+import CommentOptions from '../commentOptions/CommentOptions';
 
-function Comment({ comment, isLiking , toggleCommentLike }) {
+function Comment({ comment, isLiking , toggleCommentLike, isPostOwner, deleteComment }) {
     // const [isLiked, setIsLiked] = useState(false);
     const [timeAgoString, setTimeAgoString] = useState('');
 
@@ -16,6 +17,11 @@ function Comment({ comment, isLiking , toggleCommentLike }) {
     // };
 
     console.log("checking for infinite loop in comment component");
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    const isCommentOwner = currentUser.userId === commentOwner.userId;
+    const canEdit = isCommentOwner || isPostOwner;
+
+
 
     function calculateTimeAgo(date) {
             const now = new Date();
@@ -77,6 +83,14 @@ function Comment({ comment, isLiking , toggleCommentLike }) {
                     )}
                 </div>
             </div>
+            {canEdit && (
+                <CommentOptions 
+                    deleteComment={() => deleteComment(comment.commentId)} 
+                    toggleShowEdit={() => console.log("Edit Comment")}  
+                    isPostOwner={isPostOwner}
+                    isCommentOwner={isCommentOwner}
+                />
+            )}
         </div>
     );
 }

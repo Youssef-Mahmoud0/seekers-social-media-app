@@ -125,7 +125,28 @@ function Feed({ mainRef, isUserFeed }) {
         setPostFocusShowComments(true);
     }
 
+    function handleHideComments() {
+        setPostFocusShowComments(false);
+        setActivePost(null);
+    }
 
+    function handleIncreaseCommentsCount(){
+        setPosts(prevPosts => prevPosts.map(post => {
+            if (activePost && post.postId === activePost.postId) {
+                setActivePost({ ...activePost, commentsCount: activePost.commentsCount + 1 });
+            }
+            return post.postId === activePost.postId ? { ...post, commentsCount: post.commentsCount + 1 } : post;
+        }));
+    }
+
+    function handleDecreaseCommentsCount(){
+        setPosts(prevPosts => prevPosts.map(post => {
+            if (activePost && post.postId === activePost.postId) {
+                setActivePost({ ...activePost, commentsCount: activePost.commentsCount - 1 });
+            }
+            return post.postId === activePost.postId ? { ...post, commentsCount: post.commentsCount - 1 } : post;
+        }));
+    }
 
 
     return (
@@ -139,9 +160,11 @@ function Feed({ mainRef, isUserFeed }) {
                         togglePostLike={togglePostLike}
                         isLiking={isLiking}
                         deletePost={handleDeletePost}
-                        postFocusShowComments={postFocusShowComments}
+                        postFocusShowComments={false}
                         handleShowComments={handleShowComments}
-                        
+                        handleHideComments={handleHideComments}
+                        handleIncreaseCommentsCount={handleIncreaseCommentsCount}
+                        handleDecreaseCommentsCount={handleDecreaseCommentsCount}
                     />
                 )}
                 {!hasMore && <p>No more posts to load.</p>}
@@ -159,7 +182,9 @@ function Feed({ mainRef, isUserFeed }) {
                             deletePost={handleDeletePost}
                             postFocusShowComments={postFocusShowComments}
                             handleShowComments={handleShowComments}
-                        
+                            handleHideComments={handleHideComments}
+                            handleIncreaseCommentsCount={handleIncreaseCommentsCount}
+                            handleDecreaseCommentsCount={handleDecreaseCommentsCount}
                         />     
                     </div>
                 </div>

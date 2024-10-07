@@ -10,9 +10,6 @@ class CommentService {
             throw new Error('comment not created');
         }
         
-
-        
-
         return comment;
     }
 
